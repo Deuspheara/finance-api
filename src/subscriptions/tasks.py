@@ -23,7 +23,7 @@ def process_stripe_event(self, event_data: dict[str, Any]) -> str:
     except Exception as exc:
         logger.error(f"Error processing event {event_data.get('id')}: {exc}")
         # Retry with exponential backoff
-        raise self.retry(countdown=60 * (2 ** self.request.retries), exc=exc)
+        raise self.retry(countdown=60 * (2 ** self.request.retries), exc=exc) from exc
 
 async def _process_event_async(event_data: dict[str, Any]) -> str:
     event_id = event_data.get("id")

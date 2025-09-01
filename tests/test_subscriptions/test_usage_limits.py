@@ -1,3 +1,4 @@
+from httpx import AsyncClient
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -26,7 +27,7 @@ async def test_free_tier_portfolio_limit(client: AsyncClient, test_session: Asyn
     assert can_use is True
 
     # Log usage up to the limit
-    for i in range(TIER_LIMITS[SubscriptionTier.FREE].portfolio_limit):
+    for _i in range(TIER_LIMITS[SubscriptionTier.FREE].portfolio_limit):
         await subscription_service.log_usage(user_id, "portfolio")
 
     # Should now be at limit
@@ -60,7 +61,7 @@ async def test_premium_tier_unlimited_access(client: AsyncClient, test_session: 
     premium_limit = TIER_LIMITS[SubscriptionTier.PREMIUM].portfolio_limit
 
     # Log usage up to free limit
-    for i in range(free_limit):
+    for _i in range(free_limit):
         await subscription_service.log_usage(user_id, "portfolio")
 
     # Should still be within premium limit
@@ -68,7 +69,7 @@ async def test_premium_tier_unlimited_access(client: AsyncClient, test_session: 
     assert can_use is True
 
     # Continue logging up to premium limit
-    for i in range(premium_limit - free_limit):
+    for _i in range(premium_limit - free_limit):
         await subscription_service.log_usage(user_id, "portfolio")
 
     # Should now be at limit
@@ -92,7 +93,7 @@ async def test_llm_requests_limit(client: AsyncClient, test_session: AsyncSessio
     subscription_service = SubscriptionService(test_session)
 
     # Log LLM requests up to free limit
-    for i in range(TIER_LIMITS[SubscriptionTier.FREE].llm_requests_limit):
+    for _i in range(TIER_LIMITS[SubscriptionTier.FREE].llm_requests_limit):
         await subscription_service.log_usage(user_id, "llm_requests")
 
     # Should be at limit

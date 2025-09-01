@@ -17,7 +17,7 @@ async def test_finance_tools_respect_free_tier_limits(client: AsyncClient, test_
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    user_id = response.json()["id"]
+    response.json()["id"]
 
     # Login
     login_response = await client.post("/auth/login", json=user_data)
@@ -32,7 +32,7 @@ async def test_finance_tools_respect_free_tier_limits(client: AsyncClient, test_
 
     # Use up the free tier limit
     free_limit = TIER_LIMITS[SubscriptionTier.FREE].portfolio_limit
-    for i in range(free_limit):
+    for _i in range(free_limit):
         response = await client.post("/finance/portfolio/analyze", json=portfolio_data, headers=headers)
         assert response.status_code == 200
 
@@ -79,7 +79,7 @@ async def test_premium_tier_unlimited_portfolio_access(client: AsyncClient, test
     free_limit = TIER_LIMITS[SubscriptionTier.FREE].portfolio_limit
     premium_limit = TIER_LIMITS[SubscriptionTier.PREMIUM].portfolio_limit
 
-    for i in range(free_limit + 1):  # One more than free limit
+    for _i in range(free_limit + 1):  # One more than free limit
         response = await client.post("/finance/portfolio/analyze", json=portfolio_data, headers=headers)
         assert response.status_code == 200
 

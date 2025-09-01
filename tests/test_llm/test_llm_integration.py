@@ -90,7 +90,7 @@ async def test_llm_usage_limit_exceeded(client: AsyncClient, test_session: Async
     token = login_response.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
-    subscription_service = SubscriptionService(test_session)
+    SubscriptionService(test_session)
 
     # Mock OpenRouter API
     mock_response = {
@@ -115,7 +115,7 @@ async def test_llm_usage_limit_exceeded(client: AsyncClient, test_session: Async
 
     # Use up the free tier limit
     free_limit = TIER_LIMITS[SubscriptionTier.FREE].llm_requests_limit
-    for i in range(free_limit):
+    for _i in range(free_limit):
         response = await client.post("/llm/chat", json=chat_data, headers=headers)
         assert response.status_code == 200
 
@@ -247,7 +247,7 @@ async def test_llm_chat_user_validation(client: AsyncClient, respx_mock):
     }
 
     response1 = await client.post("/users/", json=user1_data)
-    user1_id = response1.json()["id"]
+    response1.json()["id"]
 
     response2 = await client.post("/users/", json=user2_data)
     user2_id = response2.json()["id"]

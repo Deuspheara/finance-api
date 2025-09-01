@@ -14,7 +14,7 @@ from src.auth.router import router as auth_router
 from src.core.config import settings
 from src.core.database import create_db_and_tables
 from src.core.exceptions import (
-    BaseAPIException,
+    BaseAPIError,
     api_exception_handler,
     general_exception_handler,
 )
@@ -52,7 +52,7 @@ limiter = Limiter(key_func=get_remote_address, default_limits=[f"{settings.RATE_
 app.state.limiter = limiter
 
 # Add exception handlers
-app.add_exception_handler(BaseAPIException, api_exception_handler)
+app.add_exception_handler(BaseAPIError, api_exception_handler)
 app.add_exception_handler(Exception, general_exception_handler)
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
@@ -92,12 +92,12 @@ async def stripe_webhook(request: Request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
-    except ValueError:
+    except ValueError as e:
         # Invalid payload
-        raise HTTPException(status_code=400, detail="Invalid payload")
-    except stripe.error.SignatureVerificationError:
+        raise HTTPException(status_code=400, detail="Invalid payload") from e
+    except stripe.error.SignatureVerificationError as e:
         # Invalid signature
-        raise HTTPException(status_code=400, detail="Invalid signature")
+        raise HTTPException(status_code=400, detail="Invalid signature") from e
 
     # Enqueue the task for background processing
     process_stripe_event.delay(event)

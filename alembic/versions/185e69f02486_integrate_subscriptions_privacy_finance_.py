@@ -1,7 +1,7 @@
 """Integrate subscriptions, privacy, finance modules
 
 Revision ID: 185e69f02486
-Revises: 
+Revises:
 Create Date: 2025-09-01 22:03:35.871505
 
 """

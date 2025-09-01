@@ -36,7 +36,7 @@ async def test_consent_recording(client: AsyncClient, test_session: AsyncSession
     assert response.status_code == 200
 
     # Verify consent was recorded
-    gdpr_service = GDPRService(test_session)
+    GDPRService(test_session)
     # Check database directly since export might be async
     from sqlalchemy import select
     result = await test_session.execute(
@@ -170,7 +170,7 @@ async def test_consent_validation(client: AsyncClient):
     }
 
     response1 = await client.post("/users/", json=user1_data)
-    user1_id = response1.json()["id"]
+    response1.json()["id"]
 
     response2 = await client.post("/users/", json=user2_data)
     user2_id = response2.json()["id"]

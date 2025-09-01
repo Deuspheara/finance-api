@@ -108,10 +108,10 @@ async def test_user_cannot_access_other_user_data(client: AsyncClient):
     }
 
     response1 = await client.post("/users/", json=user1_data)
-    user1_id = response1.json()["id"]
+    response1.json()["id"]
 
     response2 = await client.post("/users/", json=user2_data)
-    user2_id = response2.json()["id"]
+    response2.json()["id"]
 
     # Login as user1
     login_response = await client.post("/auth/login", json=user1_data)
