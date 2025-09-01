@@ -57,7 +57,6 @@ finance = [
 ]
 
 privacy = [
-    "data-anonymization>=2.1.0",
 ]
 
 [tool.pytest.ini_options]
