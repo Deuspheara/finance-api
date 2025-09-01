@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  app1:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.prod
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://user:pass@db:5432/fastapi_prod
+      - REDIS_URL=redis://redis:6379
+      - SECRET_KEY=your-super-secret-key-here-at-least-32-characters-long-for-production
+      - ENVIRONMENT=production
+      - WORKERS=4
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+
+  app2:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.prod
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://user:pass@db:5432/fastapi_prod
+      - REDIS_URL=redis://redis:6379
+      - SECRET_KEY=your-super-secret-key-here-at-least-32-characters-long-for-production
+      - ENVIRONMENT=production
+      - WORKERS=4
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.26
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app1
+      - app2
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: fastapi_prod
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
