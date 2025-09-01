@@ -8,9 +8,11 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
 
+
 class UserUpdate(BaseModel):
     email: EmailStr | None = None
     is_active: bool | None = None
+
 
 class UserResponse(BaseModel):
     id: UUID

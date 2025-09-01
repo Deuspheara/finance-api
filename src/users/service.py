@@ -22,7 +22,7 @@ class UserService:
 
         user = User(
             email=user_create.email,
-            hashed_password=get_password_hash(user_create.password)
+            hashed_password=get_password_hash(user_create.password),
         )
         self.session.add(user)
         await self.session.commit()

@@ -10,6 +10,7 @@ from src.privacy.services import GDPRService
 
 logger = logging.getLogger(__name__)
 
+
 @celery_app.task(bind=True, max_retries=3)
 def generate_user_data_export(self, user_id: int, export_id: str = None) -> str:
     """
@@ -25,7 +26,8 @@ def generate_user_data_export(self, user_id: int, export_id: str = None) -> str:
     except Exception as exc:
         logger.error(f"Error generating export for user {user_id}: {exc}")
         # Retry with exponential backoff
-        raise self.retry(countdown=60 * (2 ** self.request.retries), exc=exc) from exc
+        raise self.retry(countdown=60 * (2**self.request.retries), exc=exc) from exc
+
 
 async def _generate_export_async(user_id: int, export_id: str) -> str:
     logger.info(f"Generating data export for user {user_id}, export_id: {export_id}")
@@ -51,13 +53,13 @@ async def _generate_export_async(user_id: int, export_id: str) -> str:
             "user_id": user_id,
             "export_id": export_id,
             "generated_at": datetime.utcnow().isoformat(),
-            "version": "1.0"
+            "version": "1.0",
         },
-        "data": data
+        "data": data,
     }
 
     # Save to file
-    with open(export_file, 'w') as f:
+    with open(export_file, "w") as f:
         json.dump(export_data, f, indent=2)
 
     logger.info(f"Successfully generated export for user {user_id} at {export_file}")

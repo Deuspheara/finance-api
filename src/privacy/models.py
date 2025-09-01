@@ -17,6 +17,7 @@ class UserConsent(SQLModel, table=True):
     granted: bool
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
+
 class AuditLog(SQLModel, table=True):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 

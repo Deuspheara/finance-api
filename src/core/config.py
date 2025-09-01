@@ -7,10 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
-        env_ignore_empty=True,
-        extra="ignore",
-        case_sensitive=False
+        env_file=".env", env_ignore_empty=True, extra="ignore", case_sensitive=False
     )
 
     # App Configuration
@@ -31,8 +28,15 @@ class Settings(BaseSettings):
     REDIS_TIMEOUT: int = 5
 
     # Security Configuration
-    SECRET_KEY: str = Field(default="your-super-secret-key-here-at-least-32-characters-long", min_length=32, description="Secret key for signing")
-    ENCRYPTION_KEY: str = Field(default="your-encryption-key-here", description="Key for encrypting sensitive data")
+    SECRET_KEY: str = Field(
+        default="your-super-secret-key-here-at-least-32-characters-long",
+        min_length=32,
+        description="Secret key for signing",
+    )
+    ENCRYPTION_KEY: str = Field(
+        default="your-encryption-key-here",
+        description="Key for encrypting sensitive data",
+    )
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     ALGORITHM: str = "HS256"
@@ -57,11 +61,17 @@ class Settings(BaseSettings):
 
     # Stripe Configuration
     STRIPE_API_KEY: str = Field(default="sk_test_default", description="Stripe API key")
-    STRIPE_WEBHOOK_SECRET: str = Field(default="whsec_default", description="Stripe webhook secret")
-    STRIPE_PREMIUM_PLAN_PRICE_ID: str = Field(default="price_default", description="Stripe premium plan price ID")
+    STRIPE_WEBHOOK_SECRET: str = Field(
+        default="whsec_default", description="Stripe webhook secret"
+    )
+    STRIPE_PREMIUM_PLAN_PRICE_ID: str = Field(
+        default="price_default", description="Stripe premium plan price ID"
+    )
 
     # LLM Configuration
-    OPENROUTER_API_KEY: str = Field(default="sk-or-v1-default", description="OpenRouter API key")
+    OPENROUTER_API_KEY: str = Field(
+        default="sk-or-v1-default", description="OpenRouter API key"
+    )
     DEFAULT_LLM_MODEL: str = "openai/gpt-4o"
 
     # GDPR Configuration
@@ -91,8 +101,10 @@ class Settings(BaseSettings):
     def redoc_url(self) -> str | None:
         return "/redoc" if not self.is_production else None
 
+
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
 
 settings = get_settings()

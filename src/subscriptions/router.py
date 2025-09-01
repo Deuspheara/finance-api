@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
@@ -13,20 +12,24 @@ from src.users.models import User
 
 router = APIRouter()
 
+
 @router.get("/subscription", response_model=SubscriptionResponse)
 async def get_subscription(
     current_user: User = Depends(get_current_active_user),
-    subscription_service: SubscriptionService = Depends(get_subscription_service)
+    subscription_service: SubscriptionService = Depends(get_subscription_service),
 ):
-    subscription = await subscription_service.get_subscription_by_user_id(current_user.id)
+    subscription = await subscription_service.get_subscription_by_user_id(
+        current_user.id
+    )
     if not subscription:
         raise HTTPException(status_code=404, detail="Subscription not found")
     return SubscriptionResponse.model_validate(subscription)
 
+
 @router.get("/usage", response_model=list[UsageLogResponse])
 async def get_usage_logs(
     current_user: User = Depends(get_current_active_user),
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
 ):
     statement = select(UsageLog).where(UsageLog.user_id == current_user.id)
     result = await session.execute(statement)

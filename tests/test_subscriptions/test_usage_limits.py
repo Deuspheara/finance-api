@@ -8,13 +8,12 @@ from src.subscriptions.tiers import TIER_LIMITS, SubscriptionTier
 
 
 @pytest.mark.asyncio
-async def test_free_tier_portfolio_limit(client: AsyncClient, test_session: AsyncSession):
+async def test_free_tier_portfolio_limit(
+    client: AsyncClient, test_session: AsyncSession
+):
     """Test that free tier users are limited to 5 portfolios"""
     # Create user
-    user_data = {
-        "email": "freelimit@example.com",
-        "password": "testpassword123"
-    }
+    user_data = {"email": "freelimit@example.com", "password": "testpassword123"}
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
@@ -36,13 +35,12 @@ async def test_free_tier_portfolio_limit(client: AsyncClient, test_session: Asyn
 
 
 @pytest.mark.asyncio
-async def test_premium_tier_unlimited_access(client: AsyncClient, test_session: AsyncSession):
+async def test_premium_tier_unlimited_access(
+    client: AsyncClient, test_session: AsyncSession
+):
     """Test that premium tier users have higher limits"""
     # Create user
-    user_data = {
-        "email": "premiumlimit@example.com",
-        "password": "testpassword123"
-    }
+    user_data = {"email": "premiumlimit@example.com", "password": "testpassword123"}
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
@@ -81,10 +79,7 @@ async def test_premium_tier_unlimited_access(client: AsyncClient, test_session: 
 async def test_llm_requests_limit(client: AsyncClient, test_session: AsyncSession):
     """Test LLM request limits for different tiers"""
     # Create free user
-    user_data = {
-        "email": "llmfree@example.com",
-        "password": "testpassword123"
-    }
+    user_data = {"email": "llmfree@example.com", "password": "testpassword123"}
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
@@ -102,13 +97,12 @@ async def test_llm_requests_limit(client: AsyncClient, test_session: AsyncSessio
 
 
 @pytest.mark.asyncio
-async def test_usage_logging_creates_records(client: AsyncClient, test_session: AsyncSession):
+async def test_usage_logging_creates_records(
+    client: AsyncClient, test_session: AsyncSession
+):
     """Test that usage logging creates proper records"""
     # Create user
-    user_data = {
-        "email": "usagelog@example.com",
-        "password": "testpassword123"
-    }
+    user_data = {"email": "usagelog@example.com", "password": "testpassword123"}
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
@@ -122,6 +116,7 @@ async def test_usage_logging_creates_records(client: AsyncClient, test_session: 
 
     # Check usage logs were created
     from sqlalchemy import select
+
     result = await test_session.execute(
         select(UsageLog).where(UsageLog.user_id == user_id)
     )

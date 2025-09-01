@@ -7,10 +7,12 @@ from sqlmodel import Field, Relationship, SQLModel
 if TYPE_CHECKING:
     from src.subscriptions.models import Subscription
 
+
 class UserBase(SQLModel):
     email: str = Field(unique=True, index=True)
     is_active: bool = True
     is_superuser: bool = False
+
 
 class User(UserBase, table=True):
     id: UUID | None = Field(default_factory=uuid4, primary_key=True)

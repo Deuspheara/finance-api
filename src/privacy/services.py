@@ -14,9 +14,7 @@ class GDPRService:
     async def record_consent(self, user_id: UUID, consent_type: str, granted: bool):
         # Create consent record
         consent = UserConsent(
-            user_id=user_id,
-            consent_type=consent_type,
-            granted=granted
+            user_id=user_id, consent_type=consent_type, granted=granted
         )
         self.session.add(consent)
         await self.session.commit()
@@ -26,7 +24,9 @@ class GDPRService:
         audit = AuditLog(
             user_id=user_id,
             action="consent_recorded",
-            details=AuditLog.encrypt_details({"consent_type": consent_type, "granted": granted})
+            details=AuditLog.encrypt_details(
+                {"consent_type": consent_type, "granted": granted}
+            ),
         )
         self.session.add(audit)
         await self.session.commit()
@@ -53,17 +53,19 @@ class GDPRService:
                     "id": c.id,
                     "consent_type": c.consent_type,
                     "granted": c.granted,
-                    "timestamp": c.timestamp.isoformat()
-                } for c in consents
+                    "timestamp": c.timestamp.isoformat(),
+                }
+                for c in consents
             ],
             "audit_logs": [
                 {
                     "id": a.id,
                     "action": a.action,
                     "details": AuditLog.decrypt_details(a.details),
-                    "timestamp": a.timestamp.isoformat()
-                } for a in audits
-            ]
+                    "timestamp": a.timestamp.isoformat(),
+                }
+                for a in audits
+            ],
         }
 
         # Increment metrics

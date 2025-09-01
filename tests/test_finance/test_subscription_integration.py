@@ -7,13 +7,12 @@ from src.subscriptions.tiers import TIER_LIMITS, SubscriptionTier
 
 
 @pytest.mark.asyncio
-async def test_finance_tools_respect_free_tier_limits(client: AsyncClient, test_session: AsyncSession):
+async def test_finance_tools_respect_free_tier_limits(
+    client: AsyncClient, test_session: AsyncSession
+):
     """Test that finance tools enforce free tier portfolio limits"""
     # Create user
-    user_data = {
-        "email": "freelimit@example.com",
-        "password": "testpassword123"
-    }
+    user_data = {"email": "freelimit@example.com", "password": "testpassword123"}
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
@@ -24,20 +23,20 @@ async def test_finance_tools_respect_free_tier_limits(client: AsyncClient, test_
     token = login_response.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
-    portfolio_data = {
-        "assets": [
-            {"symbol": "AAPL", "weight": 1.0, "price": 150.0}
-        ]
-    }
+    portfolio_data = {"assets": [{"symbol": "AAPL", "weight": 1.0, "price": 150.0}]}
 
     # Use up the free tier limit
     free_limit = TIER_LIMITS[SubscriptionTier.FREE].portfolio_limit
     for _i in range(free_limit):
-        response = await client.post("/finance/portfolio/analyze", json=portfolio_data, headers=headers)
+        response = await client.post(
+            "/finance/portfolio/analyze", json=portfolio_data, headers=headers
+        )
         assert response.status_code == 200
 
     # Next request should fail due to limit exceeded
-    response = await client.post("/finance/portfolio/analyze", json=portfolio_data, headers=headers)
+    response = await client.post(
+        "/finance/portfolio/analyze", json=portfolio_data, headers=headers
+    )
     assert response.status_code == 500  # Exception raised in FinanceToolBase
 
     # Check the error message
@@ -45,13 +44,12 @@ async def test_finance_tools_respect_free_tier_limits(client: AsyncClient, test_
 
 
 @pytest.mark.asyncio
-async def test_premium_tier_unlimited_portfolio_access(client: AsyncClient, test_session: AsyncSession):
+async def test_premium_tier_unlimited_portfolio_access(
+    client: AsyncClient, test_session: AsyncSession
+):
     """Test that premium users have higher portfolio limits"""
     # Create user
-    user_data = {
-        "email": "premiumfinance@example.com",
-        "password": "testpassword123"
-    }
+    user_data = {"email": "premiumfinance@example.com", "password": "testpassword123"}
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
@@ -69,18 +67,16 @@ async def test_premium_tier_unlimited_portfolio_access(client: AsyncClient, test
     token = login_response.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
-    portfolio_data = {
-        "assets": [
-            {"symbol": "AAPL", "weight": 1.0, "price": 150.0}
-        ]
-    }
+    portfolio_data = {"assets": [{"symbol": "AAPL", "weight": 1.0, "price": 150.0}]}
 
     # Use more than free limit
     free_limit = TIER_LIMITS[SubscriptionTier.FREE].portfolio_limit
     premium_limit = TIER_LIMITS[SubscriptionTier.PREMIUM].portfolio_limit
 
     for _i in range(free_limit + 1):  # One more than free limit
-        response = await client.post("/finance/portfolio/analyze", json=portfolio_data, headers=headers)
+        response = await client.post(
+            "/finance/portfolio/analyze", json=portfolio_data, headers=headers
+        )
         assert response.status_code == 200
 
     # Should still work up to premium limit
@@ -89,13 +85,12 @@ async def test_premium_tier_unlimited_portfolio_access(client: AsyncClient, test
 
 
 @pytest.mark.asyncio
-async def test_usage_logging_on_finance_tool_usage(client: AsyncClient, test_session: AsyncSession):
+async def test_usage_logging_on_finance_tool_usage(
+    client: AsyncClient, test_session: AsyncSession
+):
     """Test that finance tool usage is properly logged"""
     # Create user
-    user_data = {
-        "email": "usagelogfinance@example.com",
-        "password": "testpassword123"
-    }
+    user_data = {"email": "usagelogfinance@example.com", "password": "testpassword123"}
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
@@ -112,13 +107,11 @@ async def test_usage_logging_on_finance_tool_usage(client: AsyncClient, test_ses
     assert can_use_before is True
 
     # Use the tool
-    portfolio_data = {
-        "assets": [
-            {"symbol": "AAPL", "weight": 1.0, "price": 150.0}
-        ]
-    }
+    portfolio_data = {"assets": [{"symbol": "AAPL", "weight": 1.0, "price": 150.0}]}
 
-    response = await client.post("/finance/portfolio/analyze", json=portfolio_data, headers=headers)
+    response = await client.post(
+        "/finance/portfolio/analyze", json=portfolio_data, headers=headers
+    )
     assert response.status_code == 200
 
     # Check usage was logged
@@ -127,7 +120,9 @@ async def test_usage_logging_on_finance_tool_usage(client: AsyncClient, test_ses
     from src.subscriptions.models import UsageLog
 
     result = await test_session.execute(
-        select(UsageLog).where(UsageLog.user_id == user_id, UsageLog.feature_name == "portfolio")
+        select(UsageLog).where(
+            UsageLog.user_id == user_id, UsageLog.feature_name == "portfolio"
+        )
     )
     logs = result.scalars().all()
     assert len(logs) == 1
@@ -141,11 +136,7 @@ async def test_usage_logging_on_finance_tool_usage(client: AsyncClient, test_ses
 @pytest.mark.asyncio
 async def test_finance_tool_requires_authentication(client: AsyncClient):
     """Test that finance tools require authentication"""
-    portfolio_data = {
-        "assets": [
-            {"symbol": "AAPL", "weight": 1.0, "price": 150.0}
-        ]
-    }
+    portfolio_data = {"assets": [{"symbol": "AAPL", "weight": 1.0, "price": 150.0}]}
 
     # Try without authentication
     response = await client.post("/finance/portfolio/analyze", json=portfolio_data)

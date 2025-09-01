@@ -6,17 +6,13 @@ from src.subscriptions.services import SubscriptionService
 
 
 @pytest.mark.asyncio
-async def test_users_have_isolated_data(client: AsyncClient, test_session: AsyncSession):
+async def test_users_have_isolated_data(
+    client: AsyncClient, test_session: AsyncSession
+):
     """Test that different users have completely isolated financial data"""
     # Create two users
-    user1_data = {
-        "email": "user1@example.com",
-        "password": "testpassword123"
-    }
-    user2_data = {
-        "email": "user2@example.com",
-        "password": "testpassword123"
-    }
+    user1_data = {"email": "user1@example.com", "password": "testpassword123"}
+    user2_data = {"email": "user2@example.com", "password": "testpassword123"}
 
     response1 = await client.post("/users/", json=user1_data)
     user1_id = response1.json()["id"]
@@ -38,11 +34,13 @@ async def test_users_have_isolated_data(client: AsyncClient, test_session: Async
     portfolio_data = {
         "assets": [
             {"symbol": "AAPL", "weight": 0.6, "price": 150.0},
-            {"symbol": "GOOGL", "weight": 0.4, "price": 2500.0}
+            {"symbol": "GOOGL", "weight": 0.4, "price": 2500.0},
         ]
     }
 
-    response = await client.post("/finance/portfolio/analyze", json=portfolio_data, headers=headers1)
+    response = await client.post(
+        "/finance/portfolio/analyze", json=portfolio_data, headers=headers1
+    )
     assert response.status_code == 200
     result1 = response.json()
 
@@ -50,11 +48,13 @@ async def test_users_have_isolated_data(client: AsyncClient, test_session: Async
     portfolio_data2 = {
         "assets": [
             {"symbol": "MSFT", "weight": 0.5, "price": 300.0},
-            {"symbol": "AMZN", "weight": 0.5, "price": 3200.0}
+            {"symbol": "AMZN", "weight": 0.5, "price": 3200.0},
         ]
     }
 
-    response = await client.post("/finance/portfolio/analyze", json=portfolio_data2, headers=headers2)
+    response = await client.post(
+        "/finance/portfolio/analyze", json=portfolio_data2, headers=headers2
+    )
     assert response.status_code == 200
     result2 = response.json()
 
@@ -79,13 +79,17 @@ async def test_users_have_isolated_data(client: AsyncClient, test_session: Async
     from src.subscriptions.models import UsageLog
 
     result = await test_session.execute(
-        select(UsageLog).where(UsageLog.user_id == user1_id, UsageLog.feature_name == "portfolio")
+        select(UsageLog).where(
+            UsageLog.user_id == user1_id, UsageLog.feature_name == "portfolio"
+        )
     )
     user1_logs = result.scalars().all()
     assert len(user1_logs) == 1
 
     result = await test_session.execute(
-        select(UsageLog).where(UsageLog.user_id == user2_id, UsageLog.feature_name == "portfolio")
+        select(UsageLog).where(
+            UsageLog.user_id == user2_id, UsageLog.feature_name == "portfolio"
+        )
     )
     user2_logs = result.scalars().all()
     assert len(user2_logs) == 1
@@ -98,14 +102,8 @@ async def test_user_cannot_access_other_user_data(client: AsyncClient):
     # Since the finance endpoints use current_user, this should be automatic
 
     # Create two users
-    user1_data = {
-        "email": "isolate1@example.com",
-        "password": "testpassword123"
-    }
-    user2_data = {
-        "email": "isolate2@example.com",
-        "password": "testpassword123"
-    }
+    user1_data = {"email": "isolate1@example.com", "password": "testpassword123"}
+    user2_data = {"email": "isolate2@example.com", "password": "testpassword123"}
 
     response1 = await client.post("/users/", json=user1_data)
     response1.json()["id"]
@@ -119,13 +117,11 @@ async def test_user_cannot_access_other_user_data(client: AsyncClient):
     headers1 = {"Authorization": f"Bearer {token1}"}
 
     # User1 analyzes portfolio
-    portfolio_data = {
-        "assets": [
-            {"symbol": "AAPL", "weight": 1.0, "price": 150.0}
-        ]
-    }
+    portfolio_data = {"assets": [{"symbol": "AAPL", "weight": 1.0, "price": 150.0}]}
 
-    response = await client.post("/finance/portfolio/analyze", json=portfolio_data, headers=headers1)
+    response = await client.post(
+        "/finance/portfolio/analyze", json=portfolio_data, headers=headers1
+    )
     assert response.status_code == 200
 
     # Since there's no endpoint to get other users' data, and all operations

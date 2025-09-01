@@ -10,6 +10,7 @@ class ConsentRequest(BaseModel):
     consent_type: str
     granted: bool
 
+
 class ConsentData(BaseModel):
     id: UUID
     consent_type: str
@@ -19,6 +20,7 @@ class ConsentData(BaseModel):
     class Config:
         from_attributes = True
 
+
 class AuditLogData(BaseModel):
     id: UUID
     action: str
@@ -27,6 +29,7 @@ class AuditLogData(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class DataExportResponse(BaseModel):
     user_id: UUID

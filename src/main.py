@@ -36,6 +36,7 @@ async def lifespan(app: FastAPI):
     # Shutdown
     pass
 
+
 # Create FastAPI app
 app = FastAPI(
     title=settings.APP_NAME,
@@ -46,7 +47,12 @@ app = FastAPI(
 )
 
 # Initialize rate limiter
-limiter = Limiter(key_func=get_remote_address, default_limits=[f"{settings.RATE_LIMIT_TIMES} per {settings.RATE_LIMIT_SECONDS} seconds"])
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=[
+        f"{settings.RATE_LIMIT_TIMES} per {settings.RATE_LIMIT_SECONDS} seconds"
+    ],
+)
 
 # Store limiter in app state for middleware access
 app.state.limiter = limiter
@@ -57,10 +63,7 @@ app.add_exception_handler(Exception, general_exception_handler)
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Add middleware
-app.add_middleware(
-    TrustedHostMiddleware,
-    allowed_hosts=settings.ALLOWED_HOSTS
-)
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.ALLOWED_HOSTS)
 
 app.add_middleware(
     CORSMiddleware,
@@ -81,11 +84,12 @@ app.include_router(privacy_router, prefix="/api/v1", tags=["privacy"])
 app.include_router(finance_router, prefix="/api/v1", tags=["finance"])
 app.include_router(llm_router, prefix="/api/v1", tags=["llm"])
 
+
 @app.post("/webhooks/stripe")
 async def stripe_webhook(request: Request):
     """Handle Stripe webhooks by enqueuing Celery tasks."""
     payload = await request.body()
-    sig_header = request.headers.get('stripe-signature')
+    sig_header = request.headers.get("stripe-signature")
 
     try:
         # Verify webhook signature
@@ -104,10 +108,12 @@ async def stripe_webhook(request: Request):
 
     return {"status": "accepted"}
 
+
 @app.get("/metrics")
 async def metrics():
     """Expose Prometheus metrics."""
     return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
+
 
 @app.get("/")
 async def root():

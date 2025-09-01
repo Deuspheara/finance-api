@@ -36,7 +36,7 @@ tmp_upload_dir = None
 
 # Performance tuning
 worker_tmp_dir = "/dev/shm"  # Use shared memory for better performance
-max_requests_jitter = 100    # Add jitter to prevent thundering herd
+max_requests_jitter = 100  # Add jitter to prevent thundering herd
 
 # Monitoring
 statsd_host = os.getenv("STATSD_HOST")
@@ -51,24 +51,31 @@ limit_request_field_size = 8190
 # keyfile = os.getenv("SSL_KEYFILE")
 # certfile = os.getenv("SSL_CERTFILE")
 
+
 # Graceful shutdown
 def on_starting(server):
     server.log.info("Starting FastAPI with Gunicorn")
 
+
 def on_reload(server):
     server.log.info("Reloading FastAPI application")
+
 
 def worker_int(worker):
     worker.log.info("Worker received INT or QUIT signal")
 
+
 def pre_fork(server, worker):
     server.log.info("Worker spawned (pid: %s)", worker.pid)
+
 
 def post_fork(server, worker):
     server.log.info("Worker spawned (pid: %s)", worker.pid)
 
+
 def post_worker_init(worker):
     worker.log.info("Worker initialized (pid: %s)", worker.pid)
+
 
 def worker_abort(worker):
     worker.log.info("Worker received SIGABRT signal")

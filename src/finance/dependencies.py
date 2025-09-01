@@ -9,6 +9,8 @@ from src.subscriptions.services import SubscriptionService
 
 async def get_portfolio_analyzer(
     session: AsyncSession = Depends(get_session),
-    subscription_service: SubscriptionService = Depends(get_subscription_service)
+    subscription_service: SubscriptionService = Depends(get_subscription_service),
 ) -> PortfolioAnalyzer:
-    return PortfolioAnalyzer(session, 0, subscription_service)  # user_id will be set in router
+    return PortfolioAnalyzer(
+        session, 0, subscription_service
+    )  # user_id will be set in router

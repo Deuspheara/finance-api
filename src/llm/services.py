@@ -27,9 +27,7 @@ class LLMService:
         # Log to database
         async for session in get_session():
             log_entry = ConversationLog(
-                user_id=user_id,
-                message=message,
-                response=response_content
+                user_id=user_id, message=message, response=response_content
             )
             session.add(log_entry)
             await session.commit()

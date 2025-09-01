@@ -11,6 +11,7 @@ from src.subscriptions.models import Subscription
 
 logger = logging.getLogger(__name__)
 
+
 @celery_app.task(bind=True, max_retries=3)
 def process_stripe_event(self, event_data: dict[str, Any]) -> str:
     """
@@ -23,7 +24,8 @@ def process_stripe_event(self, event_data: dict[str, Any]) -> str:
     except Exception as exc:
         logger.error(f"Error processing event {event_data.get('id')}: {exc}")
         # Retry with exponential backoff
-        raise self.retry(countdown=60 * (2 ** self.request.retries), exc=exc) from exc
+        raise self.retry(countdown=60 * (2**self.request.retries), exc=exc) from exc
+
 
 async def _process_event_async(event_data: dict[str, Any]) -> str:
     event_id = event_data.get("id")
@@ -47,6 +49,7 @@ async def _process_event_async(event_data: dict[str, Any]) -> str:
     logger.info(f"Successfully processed event {event_id}")
     return f"Processed event {event_id}"
 
+
 async def _handle_invoice_paid(session: AsyncSession, event_data: dict[str, Any]):
     """Handle successful invoice payment - upgrade to premium."""
     data = event_data.get("data", {}).get("object", {})
@@ -67,6 +70,7 @@ async def _handle_invoice_paid(session: AsyncSession, event_data: dict[str, Any]
 
     # Update to premium tier
     from src.subscriptions.tiers import SubscriptionTier
+
     subscription.tier = SubscriptionTier.PREMIUM.value
     subscription.updated_at = data.get("created")  # Use Stripe timestamp
 
@@ -75,7 +79,10 @@ async def _handle_invoice_paid(session: AsyncSession, event_data: dict[str, Any]
 
     logger.info(f"Upgraded subscription for user {subscription.user_id} to premium")
 
-async def _handle_subscription_deleted(session: AsyncSession, event_data: dict[str, Any]):
+
+async def _handle_subscription_deleted(
+    session: AsyncSession, event_data: dict[str, Any]
+):
     """Handle subscription cancellation - downgrade to free."""
     data = event_data.get("data", {}).get("object", {})
     customer_id = data.get("customer")
@@ -95,6 +102,7 @@ async def _handle_subscription_deleted(session: AsyncSession, event_data: dict[s
 
     # Downgrade to free tier
     from src.subscriptions.tiers import SubscriptionTier
+
     subscription.tier = SubscriptionTier.FREE.value
     subscription.updated_at = data.get("canceled_at")  # Use cancellation timestamp
 

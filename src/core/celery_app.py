@@ -6,7 +6,7 @@ celery_app = Celery(
     "finance_tool_api",
     broker=settings.REDIS_URL,
     backend=settings.REDIS_URL,
-    include=["src.subscriptions.tasks", "src.privacy.tasks"]
+    include=["src.subscriptions.tasks", "src.privacy.tasks"],
 )
 
 # Celery configuration

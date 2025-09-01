@@ -8,9 +8,11 @@ from src.core.database import get_session
 
 router = APIRouter()
 
+
 @router.get("/")
 async def health_check():
     return {"status": "healthy", "version": settings.VERSION}
+
 
 @router.get("/ready")
 async def readiness_check(session: AsyncSession = Depends(get_session)):
@@ -35,10 +37,8 @@ async def readiness_check(session: AsyncSession = Depends(get_session)):
     # Consider ready if at least database is working
     is_ready = checks.get("database") == "ok"
 
-    return {
-        "status": "ready" if is_ready else "not ready",
-        "checks": checks
-    }
+    return {"status": "ready" if is_ready else "not ready", "checks": checks}
+
 
 @router.get("/live")
 async def liveness_check():

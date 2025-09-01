@@ -1,4 +1,3 @@
-
 from httpx import AsyncClient
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,10 +10,7 @@ from src.privacy.services import GDPRService
 async def test_consent_recording(client: AsyncClient, test_session: AsyncSession):
     """Test recording user consent creates proper records"""
     # Create user and login
-    user_data = {
-        "email": "consent@example.com",
-        "password": "testpassword123"
-    }
+    user_data = {"email": "consent@example.com", "password": "testpassword123"}
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
@@ -29,7 +25,7 @@ async def test_consent_recording(client: AsyncClient, test_session: AsyncSession
     consent_data = {
         "user_id": user_id,
         "consent_type": "marketing_emails",
-        "granted": True
+        "granted": True,
     }
 
     response = await client.post("/privacy/consent", json=consent_data, headers=headers)
@@ -39,6 +35,7 @@ async def test_consent_recording(client: AsyncClient, test_session: AsyncSession
     GDPRService(test_session)
     # Check database directly since export might be async
     from sqlalchemy import select
+
     result = await test_session.execute(
         select(UserConsent).where(UserConsent.user_id == user_id)
     )
@@ -59,13 +56,12 @@ async def test_consent_recording(client: AsyncClient, test_session: AsyncSession
 
 
 @pytest.mark.asyncio
-async def test_data_export_functionality(client: AsyncClient, test_session: AsyncSession):
+async def test_data_export_functionality(
+    client: AsyncClient, test_session: AsyncSession
+):
     """Test data export retrieves user data correctly"""
     # Create user and login
-    user_data = {
-        "email": "export@example.com",
-        "password": "testpassword123"
-    }
+    user_data = {"email": "export@example.com", "password": "testpassword123"}
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
@@ -103,13 +99,12 @@ async def test_data_export_functionality(client: AsyncClient, test_session: Asyn
 
 
 @pytest.mark.asyncio
-async def test_anonymization_on_user_deletion(client: AsyncClient, test_session: AsyncSession):
+async def test_anonymization_on_user_deletion(
+    client: AsyncClient, test_session: AsyncSession
+):
     """Test that user data is anonymized when user requests deletion"""
     # Create user and login
-    user_data = {
-        "email": "anonymize@example.com",
-        "password": "testpassword123"
-    }
+    user_data = {"email": "anonymize@example.com", "password": "testpassword123"}
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
@@ -126,6 +121,7 @@ async def test_anonymization_on_user_deletion(client: AsyncClient, test_session:
 
     # Verify data exists
     from sqlalchemy import select
+
     result = await test_session.execute(
         select(UserConsent).where(UserConsent.user_id == user_id)
     )
@@ -160,14 +156,8 @@ async def test_anonymization_on_user_deletion(client: AsyncClient, test_session:
 async def test_consent_validation(client: AsyncClient):
     """Test that users can only record consent for themselves"""
     # Create two users
-    user1_data = {
-        "email": "user1@example.com",
-        "password": "testpassword123"
-    }
-    user2_data = {
-        "email": "user2@example.com",
-        "password": "testpassword123"
-    }
+    user1_data = {"email": "user1@example.com", "password": "testpassword123"}
+    user2_data = {"email": "user2@example.com", "password": "testpassword123"}
 
     response1 = await client.post("/users/", json=user1_data)
     response1.json()["id"]
@@ -184,7 +174,7 @@ async def test_consent_validation(client: AsyncClient):
     consent_data = {
         "user_id": user2_id,
         "consent_type": "marketing_emails",
-        "granted": True
+        "granted": True,
     }
 
     response = await client.post("/privacy/consent", json=consent_data, headers=headers)

@@ -19,13 +19,12 @@ class UserFactory(Factory):
 
 
 @pytest.mark.asyncio
-async def test_user_registration_creates_free_subscription(client: AsyncClient, test_session: AsyncSession):
+async def test_user_registration_creates_free_subscription(
+    client: AsyncClient, test_session: AsyncSession
+):
     """Test that user registration automatically creates a free subscription"""
     # Create user
-    user_data = {
-        "email": "newuser@example.com",
-        "password": "testpassword123"
-    }
+    user_data = {"email": "newuser@example.com", "password": "testpassword123"}
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
@@ -42,13 +41,12 @@ async def test_user_registration_creates_free_subscription(client: AsyncClient, 
 
 
 @pytest.mark.asyncio
-async def test_stripe_webhook_upgrades_subscription(client: AsyncClient, test_session: AsyncSession, respx_mock):
+async def test_stripe_webhook_upgrades_subscription(
+    client: AsyncClient, test_session: AsyncSession, respx_mock
+):
     """Test Stripe webhook upgrades user to premium tier"""
     # Create user and free subscription
-    user_data = {
-        "email": "premiumuser@example.com",
-        "password": "testpassword123"
-    }
+    user_data = {"email": "premiumuser@example.com", "password": "testpassword123"}
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
@@ -58,13 +56,8 @@ async def test_stripe_webhook_upgrades_subscription(client: AsyncClient, test_se
     stripe_webhook_payload = {
         "type": "checkout.session.completed",
         "data": {
-            "object": {
-                "customer": "cus_test123",
-                "metadata": {
-                    "user_id": str(user_id)
-                }
-            }
-        }
+            "object": {"customer": "cus_test123", "metadata": {"user_id": str(user_id)}}
+        },
     }
 
     # Mock Stripe API call to verify customer
@@ -77,7 +70,7 @@ async def test_stripe_webhook_upgrades_subscription(client: AsyncClient, test_se
     response = await client.post(
         "/subscriptions/webhook",
         json=stripe_webhook_payload,
-        headers={"stripe-signature": "test_signature"}
+        headers={"stripe-signature": "test_signature"},
     )
 
     # Assuming the webhook updates the subscription
@@ -97,5 +90,7 @@ async def test_stripe_webhook_upgrades_subscription(client: AsyncClient, test_se
     await test_session.commit()
 
     # Verify upgrade
-    updated_subscription = await subscription_service.get_subscription_by_user_id(user_id)
+    updated_subscription = await subscription_service.get_subscription_by_user_id(
+        user_id
+    )
     assert updated_subscription.tier == SubscriptionTier.PREMIUM.value

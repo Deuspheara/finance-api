@@ -19,10 +19,7 @@ class SubscriptionService:
         if existing_subscription:
             return existing_subscription
 
-        subscription = Subscription(
-            user_id=user_id,
-            tier=SubscriptionTier.FREE.value
-        )
+        subscription = Subscription(user_id=user_id, tier=SubscriptionTier.FREE.value)
         self.session.add(subscription)
         await self.session.commit()
         await self.session.refresh(subscription)
@@ -55,8 +52,7 @@ class SubscriptionService:
 
         # Count usage
         statement = select(func.count(UsageLog.id)).where(
-            UsageLog.user_id == user_id,
-            UsageLog.feature_name == feature_name
+            UsageLog.user_id == user_id, UsageLog.feature_name == feature_name
         )
         result = await self.session.execute(statement)
         usage_count = result.scalar()
@@ -64,10 +60,7 @@ class SubscriptionService:
         return usage_count < limit
 
     async def log_usage(self, user_id: UUID, feature_name: str):
-        usage_log = UsageLog(
-            user_id=user_id,
-            feature_name=feature_name
-        )
+        usage_log = UsageLog(user_id=user_id, feature_name=feature_name)
         self.session.add(usage_log)
         await self.session.commit()
         await self.session.refresh(usage_log)

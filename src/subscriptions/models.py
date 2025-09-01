@@ -7,6 +7,7 @@ from sqlmodel import Field, Relationship, SQLModel
 if TYPE_CHECKING:
     from src.users.models import User
 
+
 class Subscription(SQLModel, table=True):
     id: UUID | None = Field(default_factory=uuid4, primary_key=True)
     user_id: UUID = Field(foreign_key="user.id")
@@ -15,6 +16,7 @@ class Subscription(SQLModel, table=True):
     updated_at: datetime | None = None
     stripe_customer_id: str | None = None
     user: Optional["User"] = Relationship(back_populates="subscriptions")
+
 
 class UsageLog(SQLModel, table=True):
     id: UUID | None = Field(default_factory=uuid4, primary_key=True)

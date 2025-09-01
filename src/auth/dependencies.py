@@ -10,12 +10,14 @@ from src.users.service import UserService
 
 security = HTTPBearer()
 
+
 async def get_auth_service(session: AsyncSession = Depends(get_session)) -> AuthService:
     return AuthService(session)
 
+
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
 ) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -35,7 +37,10 @@ async def get_current_user(
 
     return user
 
-async def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
+
+async def get_current_active_user(
+    current_user: User = Depends(get_current_user),
+) -> User:
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user

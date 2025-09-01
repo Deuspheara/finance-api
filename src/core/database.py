@@ -15,10 +15,9 @@ engine = create_async_engine(
 
 # Async session maker
 AsyncSessionLocal = async_sessionmaker(
-    engine,
-    class_=AsyncSession,
-    expire_on_commit=False
+    engine, class_=AsyncSession, expire_on_commit=False
 )
+
 
 async def get_session() -> AsyncSession:
     async with AsyncSessionLocal() as session:
@@ -29,6 +28,7 @@ async def get_session() -> AsyncSession:
             raise
         finally:
             await session.close()
+
 
 # Create tables (for development)
 async def create_db_and_tables():

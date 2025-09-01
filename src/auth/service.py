@@ -17,7 +17,9 @@ class AuthService:
     async def authenticate_user(self, login_request: LoginRequest) -> TokenResponse:
         user = await self.user_service.get_user_by_email(login_request.email)
 
-        if not user or not verify_password(login_request.password, user.hashed_password):
+        if not user or not verify_password(
+            login_request.password, user.hashed_password
+        ):
             raise AuthenticationError("Incorrect email or password")
 
         if not user.is_active:
@@ -30,5 +32,5 @@ class AuthService:
 
         return TokenResponse(
             access_token=access_token,
-            expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
+            expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         )

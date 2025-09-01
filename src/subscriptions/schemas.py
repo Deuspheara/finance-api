@@ -15,6 +15,7 @@ class SubscriptionResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class UsageLogResponse(BaseModel):
     id: UUID
     user_id: UUID
