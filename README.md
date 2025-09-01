@@ -195,6 +195,26 @@ alembic downgrade -1
 - **Pydantic V2**: Latest validation and serialization
 - **Container Security**: Non-root user, multi-stage builds
 
+## 📚 Documentation
+
+### Overview
+- [Main Documentation Overview](docs/README.md) - Comprehensive guide to the project documentation
+
+### API Documentation
+- [Authentication API](docs/api/authentication.md) - Authentication endpoints and usage
+- [Finance API](docs/api/finance.md) - Financial tools and portfolio analysis
+- [LLM API](docs/api/llm.md) - Large language model integration
+- [Privacy API](docs/api/privacy.md) - Privacy and GDPR compliance features
+- [Subscriptions API](docs/api/subscriptions.md) - Subscription management and tiers
+
+### Usage Examples
+- [API Examples](docs/examples/api-examples.md) - Practical examples for API usage
+- [Subscription Tiers](docs/examples/subscription-tiers.md) - Examples of subscription configurations
+
+### Setup Guides
+- [Development Setup](docs/setup/development.md) - Detailed development environment setup
+- [Production Deployment](docs/setup/production.md) - Production deployment instructions
+
 ## 🤝 Contributing
 
 1. Follow the existing code style

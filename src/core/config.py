@@ -29,7 +29,8 @@ class Settings(BaseSettings):
     REDIS_TIMEOUT: int = 5
     
     # Security Configuration
-    SECRET_KEY: str = Field(..., min_length=32, description="Secret key for signing")
+    SECRET_KEY: str = Field(default="your-super-secret-key-here-at-least-32-characters-long", min_length=32, description="Secret key for signing")
+    ENCRYPTION_KEY: str = Field(default="your-encryption-key-here", description="Key for encrypting sensitive data")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     ALGORITHM: str = "HS256"
@@ -51,6 +52,22 @@ class Settings(BaseSettings):
     # Monitoring
     ENABLE_METRICS: bool = True
     METRICS_PORT: int = 9090
+
+    # Stripe Configuration
+    STRIPE_API_KEY: str = Field(default="sk_test_default", description="Stripe API key")
+    STRIPE_WEBHOOK_SECRET: str = Field(default="whsec_default", description="Stripe webhook secret")
+    STRIPE_PREMIUM_PLAN_PRICE_ID: str = Field(default="price_default", description="Stripe premium plan price ID")
+
+    # LLM Configuration
+    OPENROUTER_API_KEY: str = Field(default="sk-or-v1-default", description="OpenRouter API key")
+    DEFAULT_LLM_MODEL: str = "openai/gpt-4o"
+
+    # GDPR Configuration
+    GDPR_RETENTION_PERIOD_DAYS: int = 3650
+
+    # Additional Rate Limiting
+    RATE_LIMIT_TIMES: int = 100
+    RATE_LIMIT_SECONDS: int = 60
     
     @computed_field
     @property

@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
+from uuid import UUID
 
 from src.users.service import UserService
 from src.users.schemas import UserCreate, UserResponse, UserUpdate
@@ -17,7 +18,7 @@ async def create_user(
 
 @router.get("/{user_id}", response_model=UserResponse)
 async def get_user(
-    user_id: int,
+    user_id: UUID,
     service: UserService = Depends(get_user_service)
 ):
     user = await service.get_user_by_id(user_id)
@@ -27,7 +28,7 @@ async def get_user(
 
 @router.put("/{user_id}", response_model=UserResponse)
 async def update_user(
-    user_id: int,
+    user_id: UUID,
     user_update: UserUpdate,
     service: UserService = Depends(get_user_service)
 ):
@@ -36,7 +37,7 @@ async def update_user(
 
 @router.delete("/{user_id}")
 async def delete_user(
-    user_id: int,
+    user_id: UUID,
     service: UserService = Depends(get_user_service)
 ):
     await service.delete_user(user_id)

@@ -1,0 +1,34 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import select
+from typing import List
+
+from src.subscriptions.services import SubscriptionService
+from src.subscriptions.schemas import SubscriptionResponse, UsageLogResponse
+from src.subscriptions.dependencies import get_subscription_service
+from src.auth.dependencies import get_current_active_user
+from src.users.models import User
+from src.subscriptions.models import UsageLog
+from src.core.database import get_session
+
+router = APIRouter()
+
+@router.get("/subscription", response_model=SubscriptionResponse)
+async def get_subscription(
+    current_user: User = Depends(get_current_active_user),
+    subscription_service: SubscriptionService = Depends(get_subscription_service)
+):
+    subscription = await subscription_service.get_subscription_by_user_id(current_user.id)
+    if not subscription:
+        raise HTTPException(status_code=404, detail="Subscription not found")
+    return SubscriptionResponse.model_validate(subscription)
+
+@router.get("/usage", response_model=List[UsageLogResponse])
+async def get_usage_logs(
+    current_user: User = Depends(get_current_active_user),
+    session: AsyncSession = Depends(get_session)
+):
+    statement = select(UsageLog).where(UsageLog.user_id == current_user.id)
+    result = await session.execute(statement)
+    usage_logs = result.scalars().all()
+    return [UsageLogResponse.model_validate(log) for log in usage_logs]

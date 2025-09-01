@@ -9,6 +9,10 @@ from alembic import context
 from sqlmodel import SQLModel
 from src.core.config import settings
 from src.users.models import User  # Import all your models here
+from src.subscriptions.models import Subscription, UsageLog
+from src.privacy.models import UserConsent, AuditLog
+from src.finance.models import Finance
+from src.llm.models import ConversationLog
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

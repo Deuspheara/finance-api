@@ -177,3 +177,13 @@ alembic/versions/*.pyc
 
 # FastAPI specific (if applicable)
 static/uploads/
+
+# Python REPL history
+.python_history
+
+# Ruff cache
+.ruff_cache/
+
+# Black cache
+.black
+.kilocode

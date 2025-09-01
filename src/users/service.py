@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 from src.users.models import User
 from src.users.schemas import UserCreate, UserUpdate
@@ -32,12 +33,12 @@ class UserService:
         result = await self.session.execute(statement)
         return result.scalar_one_or_none()
     
-    async def get_user_by_id(self, user_id: int) -> Optional[User]:
+    async def get_user_by_id(self, user_id: UUID) -> Optional[User]:
         statement = select(User).where(User.id == user_id)
         result = await self.session.execute(statement)
         return result.scalar_one_or_none()
     
-    async def update_user(self, user_id: int, user_update: UserUpdate) -> User:
+    async def update_user(self, user_id: UUID, user_update: UserUpdate) -> User:
         user = await self.get_user_by_id(user_id)
         if not user:
             raise NotFoundError("User not found")
@@ -51,7 +52,7 @@ class UserService:
         await self.session.refresh(user)
         return user
     
-    async def delete_user(self, user_id: int) -> bool:
+    async def delete_user(self, user_id: UUID) -> bool:
         user = await self.get_user_by_id(user_id)
         if not user:
             raise NotFoundError("User not found")

@@ -21,6 +21,14 @@ dependencies = [
     "alembic>=1.16.5",
     "pydantic-settings>=2.10.1",
     "uvicorn[standard]>=0.35.0",
+    "openai>=1.51.0",
+    "tiktoken>=0.8.0",
+    "stripe>=11.1.0",
+    "cryptography>=42.0.0",
+    "celery[redis]>=5.5.3",
+    "prometheus-client>=0.20.0",
+    "slowapi>=0.1.9",
+    "tenacity>=8.5.0",
 ]
 
 [project.optional-dependencies]
@@ -31,12 +39,25 @@ dev = [
     "httpx>=0.28.0",
     "ruff>=0.8.0",
     "pre-commit>=3.8.0",
+    "pytest-mock>=3.14.0",
+    "respx>=0.21.0",
+    "factory-boy>=3.3.1",
 ]
 
 prod = [
     "gunicorn>=23.0.0",
     "uvicorn-worker>=0.3.0",
     "aiosqlite>=0.21.0",
+]
+
+finance = [
+    "numpy>=2.0.0",
+    "pandas>=2.2.0",
+    "scipy>=1.14.0",
+]
+
+privacy = [
+    "data-anonymization>=2.1.0",
 ]
 
 [tool.pytest.ini_options]
