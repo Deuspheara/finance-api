@@ -63,6 +63,7 @@ privacy = [
 [dependency-groups]
 dev = [
     "bandit>=1.8.6",
+    "greenlet>=3.0.0",
     "mypy>=1.17.1",
 ]
 
