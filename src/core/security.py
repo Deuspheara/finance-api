@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from typing import Any
-from jose import JWTError, jwt
+from jwt import PyJWTError, encode, decode
 from passlib.context import CryptContext
 from src.core.config import settings
 
@@ -13,15 +13,15 @@ def create_access_token(subject: str | Any, expires_delta: timedelta = None) -> 
         expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     
     to_encode = {"exp": expire, "sub": str(subject)}
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    encoded_jwt = encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
 def verify_token(token: str) -> str | None:
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         token_data = payload.get("sub")
         return token_data
-    except JWTError:
+    except PyJWTError:
         return None
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
