@@ -16,7 +16,6 @@ class UserConsent(SQLModel, table=True):
 
 
 class AuditLog(SQLModel, table=True):
-
     id: UUID | None = Field(default_factory=uuid4, primary_key=True)
     user_id: UUID = Field(foreign_key="user.id")
     action: str

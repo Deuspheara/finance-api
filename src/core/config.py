@@ -102,7 +102,7 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     return Settings(
         DATABASE_URL="postgresql+asyncpg://user:password@localhost:5432/db",
-        REDIS_URL="redis://localhost:6379"
+        REDIS_URL="redis://localhost:6379",
     )
 
 
