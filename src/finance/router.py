@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from src.auth.dependencies import get_current_active_user
 from src.finance.dependencies import get_portfolio_analyzer
@@ -16,7 +16,8 @@ async def analyze_portfolio(
     analyzer: PortfolioAnalyzer = Depends(get_portfolio_analyzer),
 ):
     # Set the user_id for the analyzer (convert UUID to int)
-    assert current_user.id is not None  # Authenticated users always have an ID
+    if current_user.id is None:
+        raise HTTPException(status_code=400, detail="User ID is required")
     analyzer.user_id = current_user.id.int
 
     # Run the analysis (this will check usage limit and log usage)

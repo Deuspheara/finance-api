@@ -3,7 +3,6 @@ from datetime import datetime
 import json
 import logging
 from pathlib import Path
-from typing import Optional
 from uuid import UUID
 
 from src.core.celery_app import celery_app
@@ -14,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 @celery_app.task(bind=True, max_retries=3)
-def generate_user_data_export(self, user_id: UUID, export_id: Optional[str] = None) -> str:
+def generate_user_data_export(self, user_id: UUID, export_id: str | None = None) -> str:
     """
     Generate GDPR data export for a user in the background.
     Saves the export to a JSON file for later retrieval.
