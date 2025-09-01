@@ -1,11 +1,10 @@
-import pytest
-from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
-from unittest.mock import patch
 
-from src.privacy.models import UserConsent, AuditLog
+from httpx import AsyncClient
+import pytest
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.privacy.models import AuditLog, UserConsent
 from src.privacy.services import GDPRService
-from src.privacy.schemas import ConsentRequest
 
 
 @pytest.mark.asyncio

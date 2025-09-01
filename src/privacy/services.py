@@ -1,11 +1,11 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select
-from datetime import datetime
-from typing import List
 from uuid import UUID
 
-from src.privacy.models import UserConsent, AuditLog
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import select
+
 from src.core.metrics import gdpr_actions_total
+from src.privacy.models import AuditLog, UserConsent
+
 
 class GDPRService:
     def __init__(self, session: AsyncSession):

@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
 from uuid import uuid4
 
-from src.privacy.services import GDPRService
-from src.privacy.schemas import ConsentRequest, DataExportResponse
-from src.privacy.dependencies import get_gdpr_service
+from fastapi import APIRouter, Depends, HTTPException
+
 from src.auth.dependencies import get_current_active_user
-from src.users.models import User
+from src.privacy.dependencies import get_gdpr_service
+from src.privacy.schemas import ConsentRequest
+from src.privacy.services import GDPRService
 from src.privacy.tasks import generate_user_data_export
+from src.users.models import User
 
 router = APIRouter()
 
@@ -19,7 +20,7 @@ async def record_consent(
     # Ensure user can only record consent for themselves
     if consent_request.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Cannot record consent for another user")
-    
+
     await gdpr_service.record_consent(
         user_id=consent_request.user_id,
         consent_type=consent_request.consent_type,

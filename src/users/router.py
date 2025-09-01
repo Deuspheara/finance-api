@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
-from typing import List
 from uuid import UUID
 
-from src.users.service import UserService
-from src.users.schemas import UserCreate, UserResponse, UserUpdate
+from fastapi import APIRouter, Depends, HTTPException
+
 from src.users.dependencies import get_user_service
+from src.users.schemas import UserCreate, UserResponse, UserUpdate
+from src.users.service import UserService
 
 router = APIRouter()
 

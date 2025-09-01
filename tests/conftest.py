@@ -1,11 +1,12 @@
-import pytest
 import asyncio
+
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+import pytest
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlmodel import SQLModel
 
-from src.main import app
 from src.core.database import get_session
+from src.main import app
 
 # Test database
 TEST_DATABASE_URL = "postgresql+asyncpg://test:test@localhost:5432/test_db"
@@ -19,15 +20,15 @@ def event_loop():
 @pytest.fixture(scope="session")
 async def test_engine():
     engine = create_async_engine(TEST_DATABASE_URL, echo=True)
-    
+
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
-    
+
     yield engine
-    
+
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.drop_all)
-    
+
     await engine.dispose()
 
 @pytest.fixture
@@ -40,10 +41,10 @@ async def test_session(test_engine):
 async def client(test_session):
     def override_get_session():
         yield test_session
-    
+
     app.dependency_overrides[get_session] = override_get_session
-    
+
     async with AsyncClient(app=app, base_url="http://test") as client:
         yield client
-    
+
     app.dependency_overrides.clear()

@@ -1,15 +1,12 @@
 import asyncio
+from datetime import datetime
 import json
 import logging
-import os
-from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any
 
 from src.core.celery_app import celery_app
 from src.core.database import AsyncSessionLocal
 from src.privacy.services import GDPRService
-from src.core.config import settings
 
 logger = logging.getLogger(__name__)
 

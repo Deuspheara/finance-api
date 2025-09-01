@@ -1,11 +1,11 @@
-import pytest
-from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
-from unittest.mock import patch
 
-from src.subscriptions.services import SubscriptionService
-from src.subscriptions.tiers import SubscriptionTier, TIER_LIMITS
+from httpx import AsyncClient
+import pytest
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.llm.models import ConversationLog
+from src.subscriptions.services import SubscriptionService
+from src.subscriptions.tiers import TIER_LIMITS, SubscriptionTier
 
 
 @pytest.mark.asyncio

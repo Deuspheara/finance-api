@@ -1,7 +1,9 @@
-from pydantic import BaseModel
 from datetime import datetime
-from typing import List, Optional, Dict, Any
+from typing import Any
 from uuid import UUID
+
+from pydantic import BaseModel
+
 
 class ConsentRequest(BaseModel):
     user_id: UUID
@@ -20,7 +22,7 @@ class ConsentData(BaseModel):
 class AuditLogData(BaseModel):
     id: UUID
     action: str
-    details: Optional[Dict[str, Any]] = None
+    details: dict[str, Any] | None = None
     timestamp: datetime
 
     class Config:
@@ -28,8 +30,8 @@ class AuditLogData(BaseModel):
 
 class DataExportResponse(BaseModel):
     user_id: UUID
-    consents: List[ConsentData]
-    audit_logs: List[AuditLogData]
+    consents: list[ConsentData]
+    audit_logs: list[AuditLogData]
 
     class Config:
         from_attributes = True

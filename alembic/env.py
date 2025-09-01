@@ -1,18 +1,15 @@
 import asyncio
 from logging.config import fileConfig
+
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
-from alembic import context
 
 # Import SQLModel and your models
 from sqlmodel import SQLModel
+
+from alembic import context
 from src.core.config import settings
-from src.users.models import User  # Import all your models here
-from src.subscriptions.models import Subscription, UsageLog
-from src.privacy.models import UserConsent, AuditLog
-from src.finance.models import Finance
-from src.llm.models import ConversationLog
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

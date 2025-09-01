@@ -1,15 +1,16 @@
-from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
 from uuid import UUID
+
+from pydantic import BaseModel
+
 
 class SubscriptionResponse(BaseModel):
     id: UUID
     user_id: UUID
     tier: str
     created_at: datetime
-    updated_at: Optional[datetime] = None
-    stripe_customer_id: Optional[str] = None
+    updated_at: datetime | None = None
+    stripe_customer_id: str | None = None
 
     class Config:
         from_attributes = True

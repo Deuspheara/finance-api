@@ -1,25 +1,31 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request, HTTPException, Response
+
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from slowapi.util import get_remote_address
-from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 import stripe
 
+from src.auth.router import router as auth_router
 from src.core.config import settings
 from src.core.database import create_db_and_tables
-from src.core.exceptions import BaseAPIException, api_exception_handler, general_exception_handler
-from src.shared.health import router as health_router
-from src.auth.router import router as auth_router
-from src.users.router import router as users_router
-from src.subscriptions.router import router as subscriptions_router
-from src.privacy.router import router as privacy_router
+from src.core.exceptions import (
+    BaseAPIException,
+    api_exception_handler,
+    general_exception_handler,
+)
 from src.finance.router import router as finance_router
 from src.llm.router import router as llm_router
+from src.privacy.router import router as privacy_router
+from src.shared.health import router as health_router
+from src.subscriptions.router import router as subscriptions_router
 from src.subscriptions.tasks import process_stripe_event
+from src.users.router import router as users_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -86,10 +92,10 @@ async def stripe_webhook(request: Request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
-    except ValueError as e:
+    except ValueError:
         # Invalid payload
         raise HTTPException(status_code=400, detail="Invalid payload")
-    except stripe.error.SignatureVerificationError as e:
+    except stripe.error.SignatureVerificationError:
         # Invalid signature
         raise HTTPException(status_code=400, detail="Invalid signature")
 

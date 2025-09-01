@@ -1,13 +1,13 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select, func
-from datetime import datetime
-from typing import Optional
 from uuid import UUID
 
-from src.subscriptions.models import Subscription, UsageLog
-from src.subscriptions.tiers import SubscriptionTier, TIER_LIMITS
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import func, select
+
 from src.core.exceptions import NotFoundError
 from src.core.metrics import subscriptions_active_total
+from src.subscriptions.models import Subscription, UsageLog
+from src.subscriptions.tiers import TIER_LIMITS, SubscriptionTier
+
 
 class SubscriptionService:
     def __init__(self, session: AsyncSession):
@@ -32,7 +32,7 @@ class SubscriptionService:
 
         return subscription
 
-    async def get_subscription_by_user_id(self, user_id: UUID) -> Optional[Subscription]:
+    async def get_subscription_by_user_id(self, user_id: UUID) -> Subscription | None:
         statement = select(Subscription).where(Subscription.user_id == user_id)
         result = await self.session.execute(statement)
         return result.scalar_one_or_none()

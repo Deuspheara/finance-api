@@ -1,5 +1,6 @@
-import pytest
 from httpx import AsyncClient
+import pytest
+
 
 @pytest.mark.asyncio
 async def test_create_user(client: AsyncClient):
@@ -7,7 +8,7 @@ async def test_create_user(client: AsyncClient):
         "email": "newuser@example.com",
         "password": "newpassword123"
     }
-    
+
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
     data = response.json()
@@ -21,11 +22,11 @@ async def test_create_user_duplicate_email(client: AsyncClient):
         "email": "duplicate@example.com",
         "password": "password123"
     }
-    
+
     # Create first user
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    
+
     # Try to create second user with same email
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 422
@@ -37,10 +38,10 @@ async def test_get_user(client: AsyncClient):
         "email": "getuser@example.com",
         "password": "password123"
     }
-    
+
     create_response = await client.post("/users/", json=user_data)
     user_id = create_response.json()["id"]
-    
+
     # Get user
     response = await client.get(f"/users/{user_id}")
     assert response.status_code == 200
@@ -59,16 +60,16 @@ async def test_update_user(client: AsyncClient):
         "email": "updateuser@example.com",
         "password": "password123"
     }
-    
+
     create_response = await client.post("/users/", json=user_data)
     user_id = create_response.json()["id"]
-    
+
     # Update user
     update_data = {
         "email": "updated@example.com",
         "is_active": False
     }
-    
+
     response = await client.put(f"/users/{user_id}", json=update_data)
     assert response.status_code == 200
     data = response.json()
@@ -82,14 +83,14 @@ async def test_delete_user(client: AsyncClient):
         "email": "deleteuser@example.com",
         "password": "password123"
     }
-    
+
     create_response = await client.post("/users/", json=user_data)
     user_id = create_response.json()["id"]
-    
+
     # Delete user
     response = await client.delete(f"/users/{user_id}")
     assert response.status_code == 200
-    
+
     # Verify user is deleted
     response = await client.get(f"/users/{user_id}")
     assert response.status_code == 404

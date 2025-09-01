@@ -1,10 +1,9 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.subscriptions.models import Subscription, UsageLog
+from src.subscriptions.models import UsageLog
 from src.subscriptions.services import SubscriptionService
-from src.subscriptions.tiers import SubscriptionTier, TIER_LIMITS
-from src.users.models import User
+from src.subscriptions.tiers import TIER_LIMITS, SubscriptionTier
 
 
 @pytest.mark.asyncio

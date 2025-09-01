@@ -1,9 +1,9 @@
-import pytest
 from httpx import AsyncClient
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.subscriptions.services import SubscriptionService
-from src.subscriptions.tiers import SubscriptionTier, TIER_LIMITS
+from src.subscriptions.tiers import TIER_LIMITS, SubscriptionTier
 
 
 @pytest.mark.asyncio
@@ -123,6 +123,7 @@ async def test_usage_logging_on_finance_tool_usage(client: AsyncClient, test_ses
 
     # Check usage was logged
     from sqlalchemy import select
+
     from src.subscriptions.models import UsageLog
 
     result = await test_session.execute(

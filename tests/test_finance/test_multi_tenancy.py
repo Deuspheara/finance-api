@@ -1,9 +1,8 @@
-import pytest
 from httpx import AsyncClient
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.subscriptions.services import SubscriptionService
-from src.subscriptions.tiers import SubscriptionTier, TIER_LIMITS
 
 
 @pytest.mark.asyncio
@@ -76,6 +75,7 @@ async def test_users_have_isolated_data(client: AsyncClient, test_session: Async
     # Verify they don't share usage
     # If they shared, user1 would have used 2, but it's still 1
     from sqlalchemy import select
+
     from src.subscriptions.models import UsageLog
 
     result = await test_session.execute(

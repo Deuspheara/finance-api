@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 
-from src.auth.service import AuthService
-from src.auth.schemas import LoginRequest, TokenResponse
 from src.auth.dependencies import get_auth_service, get_current_active_user
+from src.auth.schemas import LoginRequest, TokenResponse
+from src.auth.service import AuthService
 from src.users.models import User
 from src.users.schemas import UserResponse
 

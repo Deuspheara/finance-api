@@ -1,13 +1,11 @@
-import pytest
-from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
 from factory import Factory
+from httpx import AsyncClient
+import pytest
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.subscriptions.models import Subscription
 from src.subscriptions.services import SubscriptionService
 from src.subscriptions.tiers import SubscriptionTier
 from src.users.models import User
-from src.core.database import get_session
 
 
 class UserFactory(Factory):

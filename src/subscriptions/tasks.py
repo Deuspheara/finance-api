@@ -1,20 +1,18 @@
 import asyncio
 import logging
-from typing import Dict, Any
-import stripe
+from typing import Any
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
 from src.core.celery_app import celery_app
 from src.core.database import AsyncSessionLocal
-from src.subscriptions.services import SubscriptionService
 from src.subscriptions.models import Subscription
-from src.core.config import settings
 
 logger = logging.getLogger(__name__)
 
 @celery_app.task(bind=True, max_retries=3)
-def process_stripe_event(self, event_data: Dict[str, Any]) -> str:
+def process_stripe_event(self, event_data: dict[str, Any]) -> str:
     """
     Process Stripe webhook events asynchronously.
     Handles invoice.paid and subscription.deleted events.
@@ -27,7 +25,7 @@ def process_stripe_event(self, event_data: Dict[str, Any]) -> str:
         # Retry with exponential backoff
         raise self.retry(countdown=60 * (2 ** self.request.retries), exc=exc)
 
-async def _process_event_async(event_data: Dict[str, Any]) -> str:
+async def _process_event_async(event_data: dict[str, Any]) -> str:
     event_id = event_data.get("id")
     event_type = event_data.get("type")
 
@@ -49,7 +47,7 @@ async def _process_event_async(event_data: Dict[str, Any]) -> str:
     logger.info(f"Successfully processed event {event_id}")
     return f"Processed event {event_id}"
 
-async def _handle_invoice_paid(session: AsyncSession, event_data: Dict[str, Any]):
+async def _handle_invoice_paid(session: AsyncSession, event_data: dict[str, Any]):
     """Handle successful invoice payment - upgrade to premium."""
     data = event_data.get("data", {}).get("object", {})
     customer_id = data.get("customer")
@@ -77,7 +75,7 @@ async def _handle_invoice_paid(session: AsyncSession, event_data: Dict[str, Any]
 
     logger.info(f"Upgraded subscription for user {subscription.user_id} to premium")
 
-async def _handle_subscription_deleted(session: AsyncSession, event_data: Dict[str, Any]):
+async def _handle_subscription_deleted(session: AsyncSession, event_data: dict[str, Any]):
     """Handle subscription cancellation - downgrade to free."""
     data = event_data.get("data", {}).get("object", {})
     customer_id = data.get("customer")

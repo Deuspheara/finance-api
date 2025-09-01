@@ -1,14 +1,14 @@
-from typing import Dict, List
-from sqlalchemy.ext.asyncio import AsyncSession
+from uuid import UUID
+
 from src.core.database import get_session
 from src.llm.clients import OpenRouterClient
 from src.llm.models import ConversationLog
-from uuid import UUID
+
 
 class LLMService:
     def __init__(self):
         self.client = OpenRouterClient()
-        self.conversation_contexts: Dict[UUID, List[Dict[str, str]]] = {}
+        self.conversation_contexts: dict[UUID, list[dict[str, str]]] = {}
 
     async def generate_response(self, user_id: UUID, message: str) -> str:
         # Get or create conversation context

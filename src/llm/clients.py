@@ -1,5 +1,7 @@
 from openai import AsyncOpenAI
+
 from src.core.config import settings
+
 
 class OpenRouterClient:
     def __init__(self):

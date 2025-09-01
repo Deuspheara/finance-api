@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.subscriptions.services import SubscriptionService
 from src.core.metrics import finance_tool_usage_total
+from src.subscriptions.services import SubscriptionService
 
 
 class FinanceToolBase(ABC):

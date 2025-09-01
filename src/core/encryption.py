@@ -1,6 +1,9 @@
 import json
+
 from cryptography.fernet import Fernet
+
 from src.core.config import settings
+
 
 class EncryptionService:
     def __init__(self):

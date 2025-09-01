@@ -1,12 +1,12 @@
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.auth.service import AuthService
 from src.core.database import get_session
 from src.core.security import verify_token
-from src.users.service import UserService
 from src.users.models import User
-from src.auth.service import AuthService
+from src.users.service import UserService
 
 security = HTTPBearer()
 
@@ -22,17 +22,17 @@ async def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    
+
     token = credentials.credentials
     email = verify_token(token)
     if email is None:
         raise credentials_exception
-    
+
     user_service = UserService(session)
     user = await user_service.get_user_by_email(email)
     if user is None:
         raise credentials_exception
-    
+
     return user
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
