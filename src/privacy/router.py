@@ -53,5 +53,6 @@ async def anonymize_data(
     current_user: User = Depends(get_current_active_user),
     gdpr_service: GDPRService = Depends(get_gdpr_service),
 ):
+    assert current_user.id is not None  # Authenticated users always have an ID
     await gdpr_service.anonymize_user_data(current_user.id)
     return {"message": "User data anonymized successfully"}

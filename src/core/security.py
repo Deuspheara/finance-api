@@ -1,15 +1,15 @@
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, Optional
 
 from jwt import PyJWTError, decode, encode
-from passlib.context import CryptContext
+from passlib.context import CryptContext  # type: ignore
 
 from src.core.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-def create_access_token(subject: str | Any, expires_delta: timedelta = None) -> str:
+def create_access_token(subject: str | Any, expires_delta: Optional[timedelta] = None) -> str:
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:

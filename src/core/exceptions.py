@@ -1,6 +1,8 @@
 import logging
 
-from fastapi import Request
+from typing import Any
+
+from fastapi import Request, Response
 from fastapi.responses import JSONResponse
 
 logger = logging.getLogger(__name__)
@@ -33,7 +35,7 @@ class AuthorizationError(BaseAPIError):
         super().__init__(message, 403)
 
 
-async def api_exception_handler(request: Request, exc: BaseAPIError):
+def api_exception_handler(request: Request, exc: BaseAPIError) -> Response:
     logger.error(f"API Exception: {exc.message}")
     return JSONResponse(
         status_code=exc.status_code,
@@ -41,7 +43,7 @@ async def api_exception_handler(request: Request, exc: BaseAPIError):
     )
 
 
-async def general_exception_handler(request: Request, exc: Exception):
+def general_exception_handler(request: Request, exc: Exception) -> Response:
     logger.error(f"Unhandled exception: {str(exc)}")
     return JSONResponse(
         status_code=500, content={"error": "Internal server error", "status_code": 500}

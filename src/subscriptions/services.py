@@ -51,11 +51,11 @@ class SubscriptionService:
             raise ValueError(f"Unknown feature: {feature_name}")
 
         # Count usage
-        statement = select(func.count(UsageLog.id)).where(
+        statement = select(func.count(UsageLog.id)).where(  # type: ignore
             UsageLog.user_id == user_id, UsageLog.feature_name == feature_name
         )
         result = await self.session.execute(statement)
-        usage_count = result.scalar()
+        usage_count = result.scalar() or 0
 
         return usage_count < limit
 

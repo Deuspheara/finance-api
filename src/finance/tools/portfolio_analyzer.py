@@ -32,7 +32,9 @@ class PortfolioAnalyzer(FinanceToolBase):
         else:
             # Fallback without numpy/pandas
             analysis = {
-                "message": "Portfolio analysis placeholder (numpy/pandas not available)",
+                "expected_return": 0.0,
+                "volatility": 0.0,
+                "sharpe_ratio": 0.0,
                 "assets_count": len(request.assets),
             }
 

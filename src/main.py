@@ -9,6 +9,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from slowapi.util import get_remote_address
 import stripe
+from stripe import SignatureVerificationError
 
 from src.auth.router import router as auth_router
 from src.core.config import settings
@@ -30,7 +31,7 @@ from src.users.router import router as users_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    if settings.is_development:
+    if settings.ENVIRONMENT == "development":
         await create_db_and_tables()
     yield
     # Shutdown
@@ -42,8 +43,8 @@ app = FastAPI(
     title=settings.APP_NAME,
     version=settings.VERSION,
     lifespan=lifespan,
-    docs_url=settings.docs_url,
-    redoc_url=settings.redoc_url,
+    docs_url="/docs" if settings.ENVIRONMENT != "production" else None,
+    redoc_url="/redoc" if settings.ENVIRONMENT != "production" else None,
 )
 
 # Initialize rate limiter
@@ -58,9 +59,9 @@ limiter = Limiter(
 app.state.limiter = limiter
 
 # Add exception handlers
-app.add_exception_handler(BaseAPIError, api_exception_handler)
-app.add_exception_handler(Exception, general_exception_handler)
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(BaseAPIError, api_exception_handler)  # type: ignore
+app.add_exception_handler(Exception, general_exception_handler)  # type: ignore
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore
 
 # Add middleware
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.ALLOWED_HOSTS)
@@ -99,7 +100,7 @@ async def stripe_webhook(request: Request):
     except ValueError as e:
         # Invalid payload
         raise HTTPException(status_code=400, detail="Invalid payload") from e
-    except stripe.error.SignatureVerificationError as e:
+    except SignatureVerificationError as e:
         # Invalid signature
         raise HTTPException(status_code=400, detail="Invalid signature") from e
 

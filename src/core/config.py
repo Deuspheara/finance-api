@@ -82,29 +82,28 @@ class Settings(BaseSettings):
     RATE_LIMIT_SECONDS: int = 60
 
     @computed_field
-    @property
     def is_production(self) -> bool:
         return self.ENVIRONMENT == "production"
 
     @computed_field
-    @property
     def is_development(self) -> bool:
         return self.ENVIRONMENT == "development"
 
     @computed_field
-    @property
     def docs_url(self) -> str | None:
-        return "/docs" if not self.is_production else None
+        return "/docs" if self.ENVIRONMENT != "production" else None
 
     @computed_field
-    @property
     def redoc_url(self) -> str | None:
-        return "/redoc" if not self.is_production else None
+        return "/redoc" if self.ENVIRONMENT != "production" else None
 
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    return Settings(
+        DATABASE_URL="postgresql+asyncpg://user:password@localhost:5432/db",
+        REDIS_URL="redis://localhost:6379"
+    )
 
 
 settings = get_settings()

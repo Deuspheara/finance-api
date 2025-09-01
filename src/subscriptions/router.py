@@ -18,6 +18,7 @@ async def get_subscription(
     current_user: User = Depends(get_current_active_user),
     subscription_service: SubscriptionService = Depends(get_subscription_service),
 ):
+    assert current_user.id is not None  # Authenticated users always have an ID
     subscription = await subscription_service.get_subscription_by_user_id(
         current_user.id
     )

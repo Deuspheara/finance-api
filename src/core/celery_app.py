@@ -1,4 +1,4 @@
-from celery import Celery
+from celery import Celery  # type: ignore
 
 from src.core.config import settings
 
@@ -27,5 +27,5 @@ celery_app.conf.update(
 )
 
 # Import tasks to register them
-from src.subscriptions import tasks  # noqa
-from src.privacy import tasks  # noqa
+from src.subscriptions import tasks as subscription_tasks  # noqa
+from src.privacy import tasks as privacy_tasks  # noqa

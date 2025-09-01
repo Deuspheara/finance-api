@@ -2,15 +2,12 @@ from datetime import datetime
 from typing import Any
 from uuid import UUID, uuid4
 
-from pydantic import ConfigDict
 from sqlmodel import Field, SQLModel
 
 from src.core.encryption import EncryptionService
 
 
 class UserConsent(SQLModel, table=True):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
     id: UUID | None = Field(default_factory=uuid4, primary_key=True)
     user_id: UUID = Field(foreign_key="user.id")
     consent_type: str
@@ -19,7 +16,6 @@ class UserConsent(SQLModel, table=True):
 
 
 class AuditLog(SQLModel, table=True):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     id: UUID | None = Field(default_factory=uuid4, primary_key=True)
     user_id: UUID = Field(foreign_key="user.id")
