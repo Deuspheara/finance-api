@@ -22,7 +22,7 @@ def generate_user_data_export(self, user_id: UUID, export_id: str | None = None)
     try:
         if not export_id:
             export_id = f"{user_id}_{datetime.utcnow().isoformat()}"
-    
+
         try:
             loop = asyncio.get_running_loop()
             return loop.run_until_complete(_generate_export_async(user_id, export_id))
