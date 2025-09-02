@@ -2,6 +2,7 @@ from httpx import AsyncClient
 import pytest
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_create_user(client: AsyncClient):
     user_data = {"email": "newuser@example.com", "password": "newpassword123"}
@@ -14,6 +15,7 @@ async def test_create_user(client: AsyncClient):
     assert "id" in data
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_create_user_duplicate_email(client: AsyncClient):
     user_data = {"email": "duplicate@example.com", "password": "password123"}
@@ -27,6 +29,7 @@ async def test_create_user_duplicate_email(client: AsyncClient):
     assert response.status_code == 422
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_get_user(client: AsyncClient):
     # Create user first
@@ -42,12 +45,14 @@ async def test_get_user(client: AsyncClient):
     assert data["email"] == "getuser@example.com"
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_get_nonexistent_user(client: AsyncClient):
     response = await client.get("/users/00000000-0000-0000-0000-000000000000")
     assert response.status_code == 404
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_update_user(client: AsyncClient):
     # Create user first
@@ -66,6 +71,7 @@ async def test_update_user(client: AsyncClient):
     assert data["is_active"] is False
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_delete_user(client: AsyncClient):
     # Create user first

@@ -20,6 +20,7 @@ class UserFactory(Factory):
     is_superuser = False
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_user_registration_creates_free_subscription(
     client: AsyncClient, test_session: AsyncSession
@@ -42,6 +43,7 @@ async def test_user_registration_creates_free_subscription(
     assert subscription.user_id == user_id
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_stripe_webhook_upgrades_subscription(
     client: AsyncClient, test_session: AsyncSession, respx_mock

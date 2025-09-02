@@ -2,6 +2,7 @@ from httpx import AsyncClient
 import pytest
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_login_success(client: AsyncClient):
     # First create a user
@@ -21,6 +22,7 @@ async def test_login_success(client: AsyncClient):
     assert data["token_type"] == "bearer"
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_login_invalid_credentials(client: AsyncClient):
     login_data = {"email": "nonexistent@example.com", "password": "wrongpassword"}
@@ -29,6 +31,7 @@ async def test_login_invalid_credentials(client: AsyncClient):
     assert response.status_code == 401
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_get_current_user(client: AsyncClient):
     # Create and login user

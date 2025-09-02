@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.subscriptions.services import SubscriptionService
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_users_have_isolated_data(
     client: AsyncClient, test_session: AsyncSession
@@ -97,6 +98,7 @@ async def test_users_have_isolated_data(
     assert len(user2_logs) == 1
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_user_cannot_access_other_user_data(client: AsyncClient):
     """Test that users cannot access each other's financial data through API"""

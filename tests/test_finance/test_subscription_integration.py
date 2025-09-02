@@ -8,6 +8,7 @@ from src.subscriptions.services import SubscriptionService
 from src.subscriptions.tiers import TIER_LIMITS, SubscriptionTier
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_finance_tools_respect_free_tier_limits(
     client: AsyncClient, test_session: AsyncSession
@@ -45,6 +46,7 @@ async def test_finance_tools_respect_free_tier_limits(
     assert "Usage limit exceeded" in response.json().get("detail", "")
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_premium_tier_unlimited_portfolio_access(
     client: AsyncClient, test_session: AsyncSession
@@ -86,6 +88,7 @@ async def test_premium_tier_unlimited_portfolio_access(
     assert premium_limit > free_limit
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_usage_logging_on_finance_tool_usage(
     client: AsyncClient, test_session: AsyncSession
@@ -135,6 +138,7 @@ async def test_usage_logging_on_finance_tool_usage(
     assert can_use_after is True
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_finance_tool_requires_authentication(client: AsyncClient):
     """Test that finance tools require authentication"""

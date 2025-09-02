@@ -9,6 +9,7 @@ from src.subscriptions.services import SubscriptionService
 from src.subscriptions.tiers import TIER_LIMITS, SubscriptionTier
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_free_tier_portfolio_limit(
     client: AsyncClient, test_session: AsyncSession
@@ -36,6 +37,7 @@ async def test_free_tier_portfolio_limit(
     assert can_use is False
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_premium_tier_unlimited_access(
     client: AsyncClient, test_session: AsyncSession
@@ -77,6 +79,7 @@ async def test_premium_tier_unlimited_access(
     assert can_use is False
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_llm_requests_limit(client: AsyncClient, test_session: AsyncSession):
     """Test LLM request limits for different tiers"""
@@ -98,6 +101,7 @@ async def test_llm_requests_limit(client: AsyncClient, test_session: AsyncSessio
     assert can_use is False
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_usage_logging_creates_records(
     client: AsyncClient, test_session: AsyncSession

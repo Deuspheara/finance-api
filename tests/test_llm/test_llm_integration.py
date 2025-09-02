@@ -9,6 +9,7 @@ from src.subscriptions.services import SubscriptionService
 from src.subscriptions.tiers import TIER_LIMITS, SubscriptionTier
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_llm_chat_with_subscription_check(
     client: AsyncClient, test_session: AsyncSession, respx_mock
@@ -68,6 +69,7 @@ async def test_llm_chat_with_subscription_check(
     assert can_use is True
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_llm_usage_limit_exceeded(
     client: AsyncClient, test_session: AsyncSession, respx_mock
@@ -106,6 +108,7 @@ async def test_llm_usage_limit_exceeded(
     assert "Usage limit exceeded" in response.json().get("detail", "")
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_llm_chat_user_isolation(
     client: AsyncClient, test_session: AsyncSession, respx_mock
@@ -167,6 +170,7 @@ async def test_llm_chat_user_isolation(
     assert logs2[0].message == "Hello from user2"
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_llm_chat_requires_authentication(client: AsyncClient, respx_mock):
     """Test that LLM chat requires authentication"""
@@ -184,6 +188,7 @@ async def test_llm_chat_requires_authentication(client: AsyncClient, respx_mock)
     assert response.status_code == 401
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_llm_chat_user_validation(client: AsyncClient, respx_mock):
     """Test that users can only chat for themselves"""

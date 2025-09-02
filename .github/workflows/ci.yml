@@ -187,11 +187,11 @@ jobs:
           SECRET_KEY: test-secret-key-for-ci-only-not-production
         run: |
           if [ "${{ matrix.test-type }}" == "unit" ]; then
-            uv run pytest tests/ -k "not integration and not e2e" --cov=src --cov-report=xml
+            uv run pytest tests/ -m "not integration and not e2e" --cov=src --cov-report=xml
           elif [ "${{ matrix.test-type }}" == "integration" ]; then
-            uv run pytest tests/ -k "integration" --cov=src --cov-report=xml --cov-append
+            uv run pytest tests/ -m "integration" --cov=src --cov-report=xml --cov-append
           else
-            uv run pytest tests/ -k "e2e" --cov=src --cov-report=xml --cov-append
+            uv run pytest tests/ -m "e2e" --cov=src --cov-report=xml --cov-append
           fi
 
       - name: Upload coverage to Codecov

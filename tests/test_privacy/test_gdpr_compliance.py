@@ -9,6 +9,7 @@ from src.privacy.models import AuditLog, UserConsent
 from src.privacy.services import GDPRService
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_consent_recording(client: AsyncClient, test_session: AsyncSession):
     """Test recording user consent creates proper records"""
@@ -58,6 +59,7 @@ async def test_consent_recording(client: AsyncClient, test_session: AsyncSession
     assert audits[0].action == "consent_recorded"
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 @patch("src.privacy.tasks.generate_user_data_export.delay")
 async def test_data_export_functionality(
@@ -106,6 +108,7 @@ async def test_data_export_functionality(
     assert "data_processing" in consent_types
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_anonymization_on_user_deletion(
     client: AsyncClient, test_session: AsyncSession
@@ -160,6 +163,7 @@ async def test_anonymization_on_user_deletion(
     assert len(audits_after) == 0
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_consent_validation(client: AsyncClient):
     """Test that users can only record consent for themselves"""
