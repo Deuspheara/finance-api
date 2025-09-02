@@ -68,6 +68,7 @@ class UserService:
         from sqlmodel import delete
 
         from src.subscriptions.models import Subscription
+
         stmt = delete(Subscription).where(Subscription.user_id == user_id)
         await self.session.execute(stmt)
 

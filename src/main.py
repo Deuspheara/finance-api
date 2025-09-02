@@ -77,12 +77,12 @@ app.add_middleware(SlowAPIMiddleware)
 app.include_router(health_router, prefix="/health", tags=["health"])
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(users_router, prefix="/users", tags=["users"])
-app.include_router(subscriptions_router, prefix="/subscriptions", tags=["subscriptions"])
+app.include_router(
+    subscriptions_router, prefix="/subscriptions", tags=["subscriptions"]
+)
 app.include_router(privacy_router, prefix="/privacy", tags=["privacy"])
 app.include_router(finance_router, prefix="/finance", tags=["finance"])
 app.include_router(llm_router, prefix="/llm", tags=["llm"])
-
-
 
 
 @app.get("/metrics")

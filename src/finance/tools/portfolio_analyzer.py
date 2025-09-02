@@ -20,7 +20,9 @@ class PortfolioAnalyzer(FinanceToolBase):
 
             # Calculate returns based on price changes (simplified model)
             # Use asset prices to create deterministic but different returns
-            base_returns = np.array([price / 1000.0 for price in prices])  # Normalize prices
+            base_returns = np.array(
+                [price / 1000.0 for price in prices]
+            )  # Normalize prices
             # Add some variation based on weights
             returns = base_returns * (1 + weights * 0.1)  # Weight affects return
 

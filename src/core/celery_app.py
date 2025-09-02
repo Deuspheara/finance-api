@@ -35,10 +35,12 @@ config = {
 
 # Enable eager execution for tests (run tasks synchronously)
 if is_test:
-    config.update({
-        "task_always_eager": True,
-        "task_eager_propagates": True,
-    })
+    config.update(
+        {
+            "task_always_eager": True,
+            "task_eager_propagates": True,
+        }
+    )
 
 celery_app.conf.update(**config)
 

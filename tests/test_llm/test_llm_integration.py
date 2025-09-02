@@ -38,7 +38,10 @@ async def test_llm_chat_with_subscription_check(
     )
 
     # Send chat message
-    chat_data = {"user_id": str(user_id), "message": "Hello, can you help me with finance?"}
+    chat_data = {
+        "user_id": str(user_id),
+        "message": "Hello, can you help me with finance?",
+    }
 
     response = await client.post("/llm/chat", json=chat_data, headers=headers)
     assert response.status_code == 200

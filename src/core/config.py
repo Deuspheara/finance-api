@@ -102,7 +102,9 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     # Check if we're in a test environment by looking for test-specific env vars
-    database_url = os.environ.get("DATABASE_URL", "postgresql+asyncpg://user:pass@localhost:5432/fastapi_dev")
+    database_url = os.environ.get(
+        "DATABASE_URL", "postgresql+asyncpg://user:pass@localhost:5432/fastapi_dev"
+    )
     redis_url = os.environ.get("REDIS_URL", "redis://localhost:6379")
 
     return Settings(
