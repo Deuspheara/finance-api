@@ -1,8 +1,8 @@
+from unittest.mock import MagicMock, patch
 from uuid import UUID
 
 from httpx import AsyncClient
 import pytest
-from unittest.mock import patch, MagicMock
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.privacy.models import AuditLog, UserConsent
