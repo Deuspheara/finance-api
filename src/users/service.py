@@ -29,7 +29,8 @@ class UserService:
         self.session.add(user)
         await self.session.commit()
         await self.session.refresh(user)
-        assert user.id is not None  # Type assertion for mypy
+        if user.id is None:
+            raise ValueError("User ID is required")
 
         # Create free subscription for the new user
         subscription_service = SubscriptionService(self.session)

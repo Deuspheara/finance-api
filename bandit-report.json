@@ -1,17 +1,17 @@
 {
   "errors": [],
-  "generated_at": "2025-09-02T19:17:49Z",
+  "generated_at": "2025-09-02T19:22:05Z",
   "metrics": {
     "_totals": {
-      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.HIGH": 0,
       "CONFIDENCE.LOW": 0,
       "CONFIDENCE.MEDIUM": 0,
       "CONFIDENCE.UNDEFINED": 0,
       "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 1,
+      "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 1206,
+      "loc": 1207,
       "nosec": 0,
       "skipped_tests": 0
     },
@@ -679,39 +679,18 @@
       "skipped_tests": 0
     },
     "src/users/service.py": {
-      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.HIGH": 0,
       "CONFIDENCE.LOW": 0,
       "CONFIDENCE.MEDIUM": 0,
       "CONFIDENCE.UNDEFINED": 0,
       "SEVERITY.HIGH": 0,
-      "SEVERITY.LOW": 1,
+      "SEVERITY.LOW": 0,
       "SEVERITY.MEDIUM": 0,
       "SEVERITY.UNDEFINED": 0,
-      "loc": 57,
+      "loc": 58,
       "nosec": 0,
       "skipped_tests": 0
     }
   },
-  "results": [
-    {
-      "code": "31         await self.session.refresh(user)\n32         assert user.id is not None  # Type assertion for mypy\n33 \n",
-      "col_offset": 8,
-      "end_col_offset": 34,
-      "filename": "src/users/service.py",
-      "issue_confidence": "HIGH",
-      "issue_cwe": {
-        "id": 703,
-        "link": "https://cwe.mitre.org/data/definitions/703.html"
-      },
-      "issue_severity": "LOW",
-      "issue_text": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
-      "line_number": 32,
-      "line_range": [
-        32
-      ],
-      "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b101_assert_used.html",
-      "test_id": "B101",
-      "test_name": "assert_used"
-    }
-  ]
+  "results": []
 }
