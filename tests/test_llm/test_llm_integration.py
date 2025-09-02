@@ -116,10 +116,10 @@ async def test_llm_chat_user_isolation(
     user2_data = {"email": "llmuser2@example.com", "password": "testpassword123"}
 
     response1 = await client.post("/users/", json=user1_data)
-    user1_id = response1.json()["id"]
+    user1_id = UUID(response1.json()["id"])
 
     response2 = await client.post("/users/", json=user2_data)
-    user2_id = response2.json()["id"]
+    user2_id = UUID(response2.json()["id"])
 
     # Login both users
     login1 = await client.post("/auth/login", json=user1_data)

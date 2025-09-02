@@ -2,6 +2,7 @@ from uuid import UUID
 
 from httpx import AsyncClient
 import pytest
+from unittest.mock import patch, MagicMock
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.privacy.models import AuditLog, UserConsent
@@ -58,10 +59,15 @@ async def test_consent_recording(client: AsyncClient, test_session: AsyncSession
 
 
 @pytest.mark.asyncio
+@patch('src.privacy.tasks.generate_user_data_export.delay')
 async def test_data_export_functionality(
-    client: AsyncClient, test_session: AsyncSession
+    mock_task_delay, client: AsyncClient, test_session: AsyncSession
 ):
     """Test data export retrieves user data correctly"""
+    # Mock the Celery task to return a mock result
+    mock_task = MagicMock()
+    mock_task.id = "test-task-id"
+    mock_task_delay.return_value = mock_task
     # Create user and login
     user_data = {"email": "export@example.com", "password": "testpassword123"}
 

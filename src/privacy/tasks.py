@@ -22,8 +22,13 @@ def generate_user_data_export(self, user_id: UUID, export_id: str | None = None)
     try:
         if not export_id:
             export_id = f"{user_id}_{datetime.utcnow().isoformat()}"
-
-        return asyncio.run(_generate_export_async(user_id, export_id))
+    
+        try:
+            loop = asyncio.get_running_loop()
+            return loop.run_until_complete(_generate_export_async(user_id, export_id))
+        except RuntimeError:
+            # No running loop, safe to use asyncio.run()
+            return asyncio.run(_generate_export_async(user_id, export_id))
     except Exception as exc:
         logger.error(f"Error generating export for user {user_id}: {exc}")
         # Retry with exponential backoff
