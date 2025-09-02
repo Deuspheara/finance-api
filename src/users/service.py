@@ -6,10 +6,10 @@ from sqlmodel import select
 
 from src.core.exceptions import NotFoundError, ValidationError
 from src.core.security import get_password_hash
+from src.subscriptions.models import Subscription
 from src.subscriptions.services import SubscriptionService
 from src.users.models import User
 from src.users.schemas import UserCreate, UserUpdate
-from src.subscriptions.models import Subscription
 
 
 class UserService:
@@ -30,11 +30,11 @@ class UserService:
         await self.session.commit()
         await self.session.refresh(user)
         assert user.id is not None  # Type assertion for mypy
-        
+
         # Create free subscription for the new user
         subscription_service = SubscriptionService(self.session)
         await subscription_service.create_free_tier_for_user(user.id)
-        
+
         return user
 
     async def get_user_by_email(self, email: str) -> User | None:
@@ -69,7 +69,6 @@ class UserService:
         # Delete associated subscriptions
         from sqlalchemy import delete
 
-        
         stmt = delete(Subscription).where(Subscription.user_id == user_id)  # type: ignore[arg-type]
         await self.session.execute(stmt)
         await self.session.delete(user)
