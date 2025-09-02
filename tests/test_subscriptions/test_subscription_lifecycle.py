@@ -1,8 +1,9 @@
+from uuid import UUID
+
 from factory import Factory
 from httpx import AsyncClient
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
-from uuid import UUID
 
 from src.subscriptions.services import SubscriptionService
 from src.subscriptions.tiers import SubscriptionTier

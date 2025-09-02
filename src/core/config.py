@@ -1,5 +1,5 @@
-import os
 from functools import lru_cache
+import os
 from typing import Literal
 
 from pydantic import Field, computed_field
@@ -104,7 +104,7 @@ def get_settings() -> Settings:
     # Check if we're in a test environment by looking for test-specific env vars
     database_url = os.environ.get("DATABASE_URL", "postgresql+asyncpg://user:pass@localhost:5432/fastapi_dev")
     redis_url = os.environ.get("REDIS_URL", "redis://localhost:6379")
-    
+
     return Settings(
         DATABASE_URL=database_url,
         REDIS_URL=redis_url,

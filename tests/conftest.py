@@ -1,12 +1,13 @@
 import asyncio
 import logging
 import os
+import sys
+from unittest.mock import MagicMock
 
-import pytest
+from httpx import ASGITransport, AsyncClient
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlmodel import SQLModel
-from httpx import AsyncClient, ASGITransport
 
 # Set test environment variables before importing the app
 os.environ["REDIS_URL"] = "redis://fake-redis:6379"
@@ -86,8 +87,6 @@ async def client(test_session):
 
 
 # Mock Celery tasks to avoid Redis connections in tests
-import sys
-from unittest.mock import MagicMock
 
 # Mock the Celery app before any imports
 mock_task = MagicMock()

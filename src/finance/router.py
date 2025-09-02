@@ -26,5 +26,5 @@ async def analyze_portfolio(
         return result
     except Exception as e:
         if "Usage limit exceeded" in str(e):
-            raise HTTPException(status_code=500, detail="Usage limit exceeded")
+            raise HTTPException(status_code=500, detail="Usage limit exceeded") from e
         raise

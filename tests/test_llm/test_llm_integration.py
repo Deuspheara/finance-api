@@ -1,5 +1,5 @@
-import asyncio
 from uuid import UUID
+
 from httpx import AsyncClient
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -81,9 +81,6 @@ async def test_llm_usage_limit_exceeded(
     login_response = await client.post("/auth/login", json=user_data)
     token = login_response.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
-
-    # Initialize subscription service
-    subscription_service = SubscriptionService(test_session)
 
     # Mock OpenRouter API
     mock_response = {"choices": [{"message": {"content": "Test response"}}]}
