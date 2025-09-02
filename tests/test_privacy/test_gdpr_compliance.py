@@ -59,7 +59,7 @@ async def test_consent_recording(client: AsyncClient, test_session: AsyncSession
 
 
 @pytest.mark.asyncio
-@patch('src.privacy.tasks.generate_user_data_export.delay')
+@patch("src.privacy.tasks.generate_user_data_export.delay")
 async def test_data_export_functionality(
     mock_task_delay, client: AsyncClient, test_session: AsyncSession
 ):
