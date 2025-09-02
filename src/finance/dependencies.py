@@ -12,5 +12,5 @@ async def get_portfolio_analyzer(
     subscription_service: SubscriptionService = Depends(get_subscription_service),
 ) -> PortfolioAnalyzer:
     return PortfolioAnalyzer(
-        session, 0, subscription_service
+        session, None, subscription_service
     )  # user_id will be set in router

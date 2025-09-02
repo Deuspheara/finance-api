@@ -103,3 +103,8 @@ force-sort-within-sections = true
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Unused imports in __init__.py
 "tests/**/*" = ["S101"]   # Use of assert detected
+
+[tool.mypy]
+[[tool.mypy.overrides]]
+module = "numpy.*"
+ignore_missing_imports = true

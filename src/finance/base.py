@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,7 +14,7 @@ class FinanceToolBase(ABC):
     def __init__(
         self,
         session: AsyncSession,
-        user_id: UUID,
+        user_id: UUID | None,  # Changed to Optional
         subscription_service: SubscriptionService,
     ):
         self.session = session
@@ -21,6 +22,8 @@ class FinanceToolBase(ABC):
         self.subscription_service = subscription_service
 
     async def run(self, *args, **kwargs):
+        if self.user_id is None:
+            raise ValueError("user_id must be set before running")
         # Check usage limit
         if not await self.subscription_service.check_usage_limit(
             self.user_id, self.feature_name

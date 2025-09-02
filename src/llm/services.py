@@ -6,8 +6,8 @@ from src.llm.models import ConversationLog
 
 
 class LLMService:
-    def __init__(self):
-        self.client = OpenRouterClient()
+    def __init__(self) -> None:
+        self.client: OpenRouterClient = OpenRouterClient()
         self.conversation_contexts: dict[UUID, list[dict[str, str]]] = {}
 
     async def generate_response(self, user_id: UUID, message: str) -> str:
