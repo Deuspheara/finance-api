@@ -44,7 +44,7 @@ async def test_get_user(client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_get_nonexistent_user(client: AsyncClient):
-    response = await client.get("/users/99999")
+    response = await client.get("/users/00000000-0000-0000-0000-000000000000")
     assert response.status_code == 404
 
 

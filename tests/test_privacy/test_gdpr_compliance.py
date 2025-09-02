@@ -1,3 +1,4 @@
+from uuid import UUID
 from httpx import AsyncClient
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,7 +15,7 @@ async def test_consent_recording(client: AsyncClient, test_session: AsyncSession
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    user_id = response.json()["id"]
+    user_id = UUID(response.json()["id"])
 
     # Login to get token
     login_response = await client.post("/auth/login", json=user_data)
@@ -23,7 +24,7 @@ async def test_consent_recording(client: AsyncClient, test_session: AsyncSession
 
     # Record consent
     consent_data = {
-        "user_id": user_id,
+        "user_id": str(user_id),
         "consent_type": "marketing_emails",
         "granted": True,
     }
@@ -65,7 +66,7 @@ async def test_data_export_functionality(
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    user_id = response.json()["id"]
+    user_id = UUID(response.json()["id"])
 
     # Login
     login_response = await client.post("/auth/login", json=user_data)
@@ -108,7 +109,7 @@ async def test_anonymization_on_user_deletion(
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    user_id = response.json()["id"]
+    user_id = UUID(response.json()["id"])
 
     # Login
     login_response = await client.post("/auth/login", json=user_data)
@@ -172,7 +173,7 @@ async def test_consent_validation(client: AsyncClient):
 
     # Try to record consent for user2
     consent_data = {
-        "user_id": user2_id,
+        "user_id": str(user2_id),
         "consent_type": "marketing_emails",
         "granted": True,
     }

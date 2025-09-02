@@ -1,3 +1,4 @@
+from uuid import UUID
 from httpx import AsyncClient
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,7 +18,7 @@ async def test_free_tier_portfolio_limit(
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    user_id = response.json()["id"]
+    user_id = UUID(response.json()["id"])
 
     subscription_service = SubscriptionService(test_session)
 
@@ -44,7 +45,7 @@ async def test_premium_tier_unlimited_access(
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    user_id = response.json()["id"]
+    user_id = UUID(response.json()["id"])
 
     subscription_service = SubscriptionService(test_session)
 
@@ -83,7 +84,7 @@ async def test_llm_requests_limit(client: AsyncClient, test_session: AsyncSessio
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    user_id = response.json()["id"]
+    user_id = UUID(response.json()["id"])
 
     subscription_service = SubscriptionService(test_session)
 
@@ -106,7 +107,7 @@ async def test_usage_logging_creates_records(
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    user_id = response.json()["id"]
+    user_id = UUID(response.json()["id"])
 
     subscription_service = SubscriptionService(test_session)
 

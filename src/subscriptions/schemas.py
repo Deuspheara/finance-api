@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class SubscriptionResponse(BaseModel):
@@ -12,8 +12,7 @@ class SubscriptionResponse(BaseModel):
     updated_at: datetime | None = None
     stripe_customer_id: str | None = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UsageLogResponse(BaseModel):
@@ -22,5 +21,4 @@ class UsageLogResponse(BaseModel):
     feature_name: str
     timestamp: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

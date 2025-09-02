@@ -8,8 +8,6 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from slowapi.util import get_remote_address
-import stripe
-from stripe import SignatureVerificationError
 
 from src.auth.router import router as auth_router
 from src.core.config import settings
@@ -24,7 +22,6 @@ from src.llm.router import router as llm_router
 from src.privacy.router import router as privacy_router
 from src.shared.health import router as health_router
 from src.subscriptions.router import router as subscriptions_router
-from src.subscriptions.tasks import process_stripe_event
 from src.users.router import router as users_router
 
 
@@ -80,34 +77,12 @@ app.add_middleware(SlowAPIMiddleware)
 app.include_router(health_router, prefix="/health", tags=["health"])
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(users_router, prefix="/users", tags=["users"])
-app.include_router(subscriptions_router, prefix="/api/v1", tags=["subscriptions"])
-app.include_router(privacy_router, prefix="/api/v1", tags=["privacy"])
-app.include_router(finance_router, prefix="/api/v1", tags=["finance"])
-app.include_router(llm_router, prefix="/api/v1", tags=["llm"])
+app.include_router(subscriptions_router, prefix="/subscriptions", tags=["subscriptions"])
+app.include_router(privacy_router, prefix="/privacy", tags=["privacy"])
+app.include_router(finance_router, prefix="/finance", tags=["finance"])
+app.include_router(llm_router, prefix="/llm", tags=["llm"])
 
 
-@app.post("/webhooks/stripe")
-async def stripe_webhook(request: Request):
-    """Handle Stripe webhooks by enqueuing Celery tasks."""
-    payload = await request.body()
-    sig_header = request.headers.get("stripe-signature")
-
-    try:
-        # Verify webhook signature
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
-        )
-    except ValueError as e:
-        # Invalid payload
-        raise HTTPException(status_code=400, detail="Invalid payload") from e
-    except SignatureVerificationError as e:
-        # Invalid signature
-        raise HTTPException(status_code=400, detail="Invalid signature") from e
-
-    # Enqueue the task for background processing
-    process_stripe_event.delay(event)
-
-    return {"status": "accepted"}
 
 
 @app.get("/metrics")

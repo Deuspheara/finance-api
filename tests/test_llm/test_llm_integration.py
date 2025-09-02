@@ -1,3 +1,5 @@
+import asyncio
+from uuid import UUID
 from httpx import AsyncClient
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,7 +19,7 @@ async def test_llm_chat_with_subscription_check(
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    user_id = response.json()["id"]
+    user_id = UUID(response.json()["id"])
 
     # Login
     login_response = await client.post("/auth/login", json=user_data)
@@ -36,7 +38,7 @@ async def test_llm_chat_with_subscription_check(
     )
 
     # Send chat message
-    chat_data = {"user_id": user_id, "message": "Hello, can you help me with finance?"}
+    chat_data = {"user_id": str(user_id), "message": "Hello, can you help me with finance?"}
 
     response = await client.post("/llm/chat", json=chat_data, headers=headers)
     assert response.status_code == 200
@@ -73,14 +75,15 @@ async def test_llm_usage_limit_exceeded(
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    user_id = response.json()["id"]
+    user_id = UUID(response.json()["id"])
 
     # Login
     login_response = await client.post("/auth/login", json=user_data)
     token = login_response.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
-    SubscriptionService(test_session)
+    # Initialize subscription service
+    subscription_service = SubscriptionService(test_session)
 
     # Mock OpenRouter API
     mock_response = {"choices": [{"message": {"content": "Test response"}}]}
@@ -89,11 +92,11 @@ async def test_llm_usage_limit_exceeded(
         json=mock_response, status_code=200
     )
 
-    chat_data = {"user_id": user_id, "message": "Test message"}
+    chat_data = {"user_id": str(user_id), "message": "Test message"}
 
     # Use up the free tier limit
     free_limit = TIER_LIMITS[SubscriptionTier.FREE].llm_requests_limit
-    for _i in range(free_limit):
+    for _ in range(free_limit):
         response = await client.post("/llm/chat", json=chat_data, headers=headers)
         assert response.status_code == 200
 
@@ -135,13 +138,13 @@ async def test_llm_chat_user_isolation(
     )
 
     # User1 chats
-    chat_data1 = {"user_id": user1_id, "message": "Hello from user1"}
+    chat_data1 = {"user_id": str(user1_id), "message": "Hello from user1"}
 
     response = await client.post("/llm/chat", json=chat_data1, headers=headers1)
     assert response.status_code == 200
 
     # User2 chats
-    chat_data2 = {"user_id": user2_id, "message": "Hello from user2"}
+    chat_data2 = {"user_id": str(user2_id), "message": "Hello from user2"}
 
     response = await client.post("/llm/chat", json=chat_data2, headers=headers2)
     assert response.status_code == 200
@@ -207,7 +210,7 @@ async def test_llm_chat_user_validation(client: AsyncClient, respx_mock):
     )
 
     # Try to chat for user2
-    chat_data = {"user_id": user2_id, "message": "Hello"}
+    chat_data = {"user_id": str(user2_id), "message": "Hello"}
 
     response = await client.post("/llm/chat", json=chat_data, headers=headers)
     assert response.status_code == 403

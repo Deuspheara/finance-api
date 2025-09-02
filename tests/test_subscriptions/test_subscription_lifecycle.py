@@ -2,6 +2,7 @@ from factory import Factory
 from httpx import AsyncClient
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
+from uuid import UUID
 
 from src.subscriptions.services import SubscriptionService
 from src.subscriptions.tiers import SubscriptionTier
@@ -29,7 +30,7 @@ async def test_user_registration_creates_free_subscription(
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
 
-    user_id = response.json()["id"]
+    user_id = UUID(response.json()["id"])
 
     # Check subscription was created
     subscription_service = SubscriptionService(test_session)
@@ -50,7 +51,7 @@ async def test_stripe_webhook_upgrades_subscription(
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    user_id = response.json()["id"]
+    user_id = UUID(response.json()["id"])
 
     # Mock Stripe webhook payload for successful payment
     stripe_webhook_payload = {

@@ -1,3 +1,4 @@
+from uuid import UUID
 from httpx import AsyncClient
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -53,7 +54,7 @@ async def test_premium_tier_unlimited_portfolio_access(
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    user_id = response.json()["id"]
+    user_id = UUID(response.json()["id"])
 
     # Upgrade to premium
     subscription_service = SubscriptionService(test_session)
@@ -94,7 +95,7 @@ async def test_usage_logging_on_finance_tool_usage(
 
     response = await client.post("/users/", json=user_data)
     assert response.status_code == 200
-    user_id = response.json()["id"]
+    user_id = UUID(response.json()["id"])
 
     # Login
     login_response = await client.post("/auth/login", json=user_data)

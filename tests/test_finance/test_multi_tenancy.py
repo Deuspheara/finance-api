@@ -1,3 +1,4 @@
+from uuid import UUID
 from httpx import AsyncClient
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,10 +16,10 @@ async def test_users_have_isolated_data(
     user2_data = {"email": "user2@example.com", "password": "testpassword123"}
 
     response1 = await client.post("/users/", json=user1_data)
-    user1_id = response1.json()["id"]
+    user1_id = UUID(response1.json()["id"])
 
     response2 = await client.post("/users/", json=user2_data)
-    user2_id = response2.json()["id"]
+    user2_id = UUID(response2.json()["id"])
 
     # Login as user1
     login_response = await client.post("/auth/login", json=user1_data)

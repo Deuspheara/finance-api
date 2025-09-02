@@ -8,7 +8,7 @@ from src.core.security import verify_token
 from src.users.models import User
 from src.users.service import UserService
 
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)
 
 
 async def get_auth_service(session: AsyncSession = Depends(get_session)) -> AuthService:
@@ -16,7 +16,7 @@ async def get_auth_service(session: AsyncSession = Depends(get_session)) -> Auth
 
 
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    credentials: HTTPAuthorizationCredentials | None = Depends(security),
     session: AsyncSession = Depends(get_session),
 ) -> User:
     credentials_exception = HTTPException(
@@ -24,6 +24,9 @@ async def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
+    if credentials is None:
+        raise credentials_exception
 
     token = credentials.credentials
     email = verify_token(token)

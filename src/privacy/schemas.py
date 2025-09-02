@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ConsentRequest(BaseModel):
@@ -17,8 +17,7 @@ class ConsentData(BaseModel):
     granted: bool
     timestamp: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class AuditLogData(BaseModel):
@@ -27,8 +26,7 @@ class AuditLogData(BaseModel):
     details: dict[str, Any] | None = None
     timestamp: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class DataExportResponse(BaseModel):
@@ -36,5 +34,4 @@ class DataExportResponse(BaseModel):
     consents: list[ConsentData]
     audit_logs: list[AuditLogData]
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
